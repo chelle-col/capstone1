@@ -1,0 +1,12 @@
+For my first capstone I would like to implement photo filters. 
+
+My users are going to be people who like to use filters. In my experience there are many people who like filters from parents/grandparents, to children, men and women.
+
+I plan on using a photo api, like Imgur or Instagram, giving my users the ability to pick a photo from one of these apis and apply a filter to it and reupload it. Comment on photos, follow other users and create photo feeds, using tags/hashtags.
+
+My database is going to be Users, Posts, Comments, Tags/Hashtags. As I am working with photos, it is all off course. This is what is going to be takeing up the majority of my time. 
+
+Users will sign up, using an email and a username. They will be able to go to the top posts from Imgur/Instagram, displaying on one page, and choose an image. Once an image is choosen they will come to a page where they can manipulate the filters, then post it, on this site or to the orginal site, maybe with an inital comment. Once logged in they will have a feed of photos they want to see or a message telling them to pick some tags to follow. 
+
+This goes above crud using the filters, comments and feed. My stretch goals are uploading the photos directly to my database rather than using the intermediary site, and comment threading.
+
