@@ -1,12 +1,14 @@
-For my first capstone I would like to implement photo filters. 
+For my first capstone I would like to implement photo filters.
 
 My users are going to be people who like to use filters. In my experience there are many people who like filters from parents/grandparents, to children, men and women.
 
-I plan on using a photo api, like Imgur or Instagram, giving my users the ability to pick a photo from one of these apis and apply a filter to it and reupload it. Comment on photos, follow other users and create photo feeds, using tags/hashtags.
+I plan on using Imgur, giving my users the ability to pick a photo apis and apply a filter to it and reupload it.
 
-My database is going to be Users, Posts, Comments, Tags/Hashtags. As I am working with photos, it is all off course. This is what is going to be takeing up the majority of my time. 
+My database is going to be Users, Images, and Filters. Images will have a one to many relationship, many filters to one image. Users will have one to many, one user can have many images. My database schema is here.
 
-Users will sign up, using an email and a username. They will be able to go to the top posts from Imgur/Instagram, displaying on one page, and choose an image. Once an image is choosen they will come to a page where they can manipulate the filters, then post it, on this site or to the orginal site, maybe with an inital comment. Once logged in they will have a feed of photos they want to see or a message telling them to pick some tags to follow. 
+As I am working with photos, it is all off course. This is what is going to be taking up the majority of my time.
 
-This goes above crud using the filters, comments and feed. My stretch goals are uploading the photos directly to my database rather than using the intermediary site, and comment threading.
+Users will sign up, using an email and a username. They will be able to go to the top posts from Imgur, displaying on one page, and choose an image. Once an image is chosen they will come to a page where they can manipulate the filters, then post it, on this site or to the original site. Using links in a nav bar they will also be able to see images that they have created, see what others have done and upload their own.
+
+This goes above CRUD using the filters. My stretch goal is uploading the photos directly to my database rather than using the intermediary site.
 
