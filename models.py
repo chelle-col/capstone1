@@ -15,6 +15,14 @@ class User(db.Model):
     password_hash = db.Column(db.Text, nullable=False)
     bio = db.Column(db.Text)
 
+    @classmethod
+    def signup(cls):
+        return
+
+    @classmethod
+    def authentification(cls):
+        return
+
 class Image(db.Model):
     """Store the image information"""
     __tablename__ = 'images'

@@ -10,6 +10,7 @@ def homepage():
     # fetch from imgur
 
     # return homepage
+    return render_template('test.html', title='Home Page Route')
 
 @app.route('/<int:image_id>/edit')
 def edit(image_id):

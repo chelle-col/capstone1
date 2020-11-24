@@ -3,56 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Title TBD...</title>
+    <title>Dragon Fire</title>
 </head>
 <body>
     
   <link rel="stylesheet"
-  href="https://unpkg.com/bootstrap/dist/css/bootstrap.css">
+  href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/minty/bootstrap.min.css">
 <script src="https://unpkg.com/jquery"></script>
-<script src="https://unpkg.com/popper"></script>
-<script src="https://unpkg.com/bootstrap"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <link rel="stylesheet"
   href="https://use.fontawesome.com/releases/v5.3.1/css/all.css">
-<link rel="stylesheet" href="/static/stylesheets/style.css">
-<link rel="shortcut icon" href="/static/favicon.ico">
+<link rel="stylesheet" href="/static/style.css">
 </head>
 
-<body class="{% block body_class %}{% endblock %}">
-<nav class="navbar navbar-expand">
-<div class="container-fluid">
-<div class="navbar-header">
-<a href="/" class="navbar-brand">
-  <img src="/static/images/warbler-logo.png" alt="logo">
-  <span>Warbler</span>
-</a>
-</div>
-<ul class="nav navbar-nav navbar-right">
-{% if request.endpoint != None %}
-<li>
-  <form class="navbar-form navbar-right" action="/users">
-    <input name="q" class="form-control" placeholder="Search Warbler" id="search">
-    <button class="btn btn-default">
-      <span class="fa fa-search"></span>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <a class="navbar-brand text-dark" href="#"><i class="fas fa-ankh"></i><span>brand</span></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
     </button>
-  </form>
-</li>
-{% endif %}
-{% if not g.user %}
-<li><a href="/signup">Sign up</a></li>
-<li><a href="/login">Log in</a></li>
-{% else %}
-<li>
-  <a href="/users/{{ g.user.id }}">
-    <img src="{{ g.user.image_url }}" alt="{{ g.user.username }}">
-  </a>
-</li>
-<li><a href="/logout">Log out</a></li>
-{% endif %}
-</ul>
-</div>
-</nav>
+  
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Dropdown
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="#">Action</a>
+            <a class="dropdown-item" href="#">Another action</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">Something else here</a>
+          </div>
+        </li>
+
+        <ul class="nav navbar-nav navbar-right">
+            <li class="nav-item">
+                <a class="nav-link" href="/signup">Sign Up</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/login">Login</a>
+            </li>
+        </ul>
+      </ul>
+      <form class="form-inline my-2 my-lg-0">
+        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-dark my-2 my-sm-0" type="submit"><i class="fas fa-search"></i></button>
+      </form>
+    </div>
+  </nav>
+
 <div class="container">
 {% for category, message in get_flashed_messages(with_categories=True) %}
 <div class="alert alert-{{ category }}">{{ message }}</div>
