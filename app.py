@@ -1,8 +1,14 @@
+import os
 from flask import Flask, render_template, jsonify, request
+from models import User, Image, Filter, db, connect_db
+from forms import UserAddForm
 import requests as req
 
 app = Flask(__name__)
 
+connect_db(app)
+
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "it's a secret")
 
 @app.route("/")
 def homepage():
@@ -15,13 +21,16 @@ def homepage():
 @app.route('/<int:image_id>/edit')
 def edit(image_id):
     """Show edit page"""
+
     return render_template('test.html', title='Edit Page Route')
 
 
 @app.route('/signup')
 def signup():
     """Show the signup page"""
-    return render_template('test.html', title='Signup Route')
+    form = UserAddForm()
+
+    return render_template('form.html', form=form)
 
 @app.route('/login')
 def login():

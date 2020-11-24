@@ -16,8 +16,19 @@ class User(db.Model):
     bio = db.Column(db.Text)
 
     @classmethod
-    def signup(cls):
-        return
+    def signup(cls, username, email, password, image_url):
+        """Sign up user. Hashes password and adds user to system."""
+
+        hashed_pwd = bcrypt.generate_password_hash(password).decode('UTF-8')
+        user = User(
+            username=username,
+            email=email,
+            password=hashed_pwd,
+            image_url=image_url,
+        )
+
+        db.session.add(user)
+        return user
 
     @classmethod
     def authentification(cls):
@@ -27,14 +38,14 @@ class Image(db.Model):
     """Store the image information"""
     __tablename__ = 'images'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    url = db.Coulmn(db.Text)
+    url = db.Column(db.Text)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
 class Filter(db.Model):
     """Store the name and data of custom & default filters"""
     __tablename__ = 'filters'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    full_name = db.Column(db.Text, nullable=false)
+    full_name = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Text, db.ForeignKey('users.id'))
     brightness = db.Column(db.Text)
     contrast = db.Column(db.Text)
