@@ -1,6 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
+from flask_bcrypt import Bcrypt
 
 db = SQLAlchemy()
+bcrypt = Bcrypt()
 
 def connect_db(app):
     db.app = app
@@ -14,6 +16,7 @@ class User(db.Model):
     username = db.Column(db.Text, nullable=False, unique=True)
     password_hash = db.Column(db.Text, nullable=False)
     bio = db.Column(db.Text)
+    image_url = db.Column(db.Text)
 
     @classmethod
     def signup(cls, username, email, password, image_url):
@@ -23,7 +26,7 @@ class User(db.Model):
         user = User(
             username=username,
             email=email,
-            password=hashed_pwd,
+            password_hash=hashed_pwd,
             image_url=image_url,
         )
 
@@ -46,7 +49,7 @@ class Filter(db.Model):
     __tablename__ = 'filters'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     full_name = db.Column(db.Text, nullable=False)
-    user_id = db.Column(db.Text, db.ForeignKey('users.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     brightness = db.Column(db.Text)
     contrast = db.Column(db.Text)
     saturation = db.Column(db.Text)
