@@ -5,6 +5,8 @@ from forms import UserAddForm, UserLoginForm
 import requests as req
 from sqlalchemy.exc import IntegrityError
 from seed import seed_db
+from requests.auth import HTTPBasicAuth
+from auth_token import auth_token
 
 CURR_USER_KEY = "curr_user"
 
@@ -20,12 +22,20 @@ connect_db(app)
 ## Seed database through app. Comment out when not in use
 ## seed_db()
 
-@app.route("/")
+
+## Homepage Images routes ##
+
+@app.route('/')
 def homepage():
+    return redirect('/index')
+
+@app.route("/index")
+def index():
     """Show homepage."""
     # fetch from imgur
-
+    resp = req.get('https://api.imgur.com/3/gallery/hot/viral/0.json', headers=auth_token)
     # return homepage
+    flash(resp, 'info')
     if not g.user:
         return render_template('test.html', title='Home Page Route')
     else:
@@ -37,6 +47,7 @@ def edit(image_id):
 
     return render_template('test.html', title='Edit Page Route')
 
+##  Login/Logout/Sign up routes  ###
 
 @app.route('/signup', methods=['Get', 'POST'])
 def signup():
@@ -91,7 +102,8 @@ def logout():
     flash('Successfully logged out', 'success')
     return redirect('/')
 
-###  Login/Logout/Get user ###
+
+##  Helper Functions  ##
 def do_login(user):
     """Log in user."""
 
