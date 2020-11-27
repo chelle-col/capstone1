@@ -7,6 +7,7 @@ from sqlalchemy.exc import IntegrityError
 from seed import seed_db
 from requests.auth import HTTPBasicAuth
 from auth_token import auth_token
+from json import loads
 
 CURR_USER_KEY = "curr_user"
 
@@ -34,8 +35,10 @@ def index():
     """Show homepage."""
     # fetch from imgur
     resp = req.get('https://api.imgur.com/3/gallery/hot/viral/0.json', headers=auth_token)
+    prepared = loads(resp.text)
+    temp = [item['id'] for item in prepared['data']]
+    flash(temp, 'info')
     # return homepage
-    flash(resp, 'info')
     if not g.user:
         return render_template('test.html', title='Home Page Route')
     else:
