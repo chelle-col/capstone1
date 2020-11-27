@@ -34,8 +34,17 @@ class User(db.Model):
         return user
 
     @classmethod
-    def authentification(cls):
-        return
+    def authentification(cls, username, password):
+        """If username and password checks out then return user else return false"""
+
+        user = cls.query.filter_by(username=username).first()
+
+        if user:
+            is_auth = bcrypt.check_password_hash(user.password_hash, password)
+            if is_auth:
+                return user
+
+        return False
 
 class Image(db.Model):
     """Store the image information"""

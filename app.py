@@ -1,7 +1,7 @@
 import os
-from flask import Flask, render_template, jsonify, request, session, g, redirect
+from flask import Flask, flash, render_template, jsonify, request, session, g, redirect
 from models import User, Image, Filter, db, connect_db
-from forms import UserAddForm
+from forms import UserAddForm, UserLoginForm
 import requests as req
 from sqlalchemy.exc import IntegrityError
 from seed import seed_db
@@ -26,7 +26,10 @@ def homepage():
     # fetch from imgur
 
     # return homepage
-    return render_template('test.html', title='Home Page Route')
+    if not g.user:
+        return render_template('test.html', title='Home Page Route')
+    else:
+        return render_template('test.html', title=f'Home Page of {g.user.username}')
 
 @app.route('/<int:image_id>/edit')
 def edit(image_id):
@@ -59,17 +62,34 @@ def signup():
         return redirect("/")
     return render_template('form.html', form=form)
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     """Show the login page"""
-    return render_template('test.html', title='Login Route')
+    ## TODO ##
+    ## Maybe change/add api login ##
+    form = UserLoginForm()
+    if form.validate_on_submit():
+        user = User.authentification(
+            username=form.username.data,
+            password=form.password.data
+            )
+        if not user:
+            flash('Username/Password is wrong, please try again', 'danger')
+            return render_template('form.html', form=form)
+        else:
+            do_login(user)
+            flash('Successfully logged in', 'success')
+            return redirect('/')
+    else:
+        return render_template('form.html', form=form)
 
 
-@app.route('/logout', methods=['POST'])
+@app.route('/logout')
 def logout():
     """Log the current user out"""
-    return render_template('test.html', title='Logout Route')
-
+    do_logout()
+    flash('Successfully logged out', 'success')
+    return redirect('/')
 
 ###  Login/Logout/Get user ###
 def do_login(user):
