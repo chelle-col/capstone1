@@ -34,15 +34,16 @@ def homepage():
 def index():
     """Show homepage."""
     # fetch from imgur
-    resp = req.get('https://api.imgur.com/3/gallery/hot/viral/0.json', headers=auth_token)
+    resp = req.get('https://api.unsplash.com/photos', params=auth_token)
     prepared = loads(resp.text)
-    temp = [item['id'] for item in prepared['data']]
-    flash(temp, 'info')
+    image_urls = [item['urls']['small'] for item in prepared]
+    flash(image_urls, 'info')
     # return homepage
+    # return render_template('test.html', title='Testing')
     if not g.user:
-        return render_template('test.html', title='Home Page Route')
+        return render_template('display_all.html', image_urls=image_urls)
     else:
-        return render_template('test.html', title=f'Home Page of {g.user.username}')
+        return render_template('display_all.html', image_urls=image_urls)
 
 @app.route('/<int:image_id>/edit')
 def edit(image_id):

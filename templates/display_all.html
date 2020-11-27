@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% for image_url in image_urls %}
+<div>
+    <img src="{{image_url}}" alt="Image Can't be loaded" loading='lazy'>
+</div>
+{% endfor %}
+
+{% endblock %}
