@@ -33,23 +33,22 @@ def homepage():
 @app.route("/index")
 def index():
     """Show homepage."""
-    # fetch from imgur
+    # fetch from unsplash
     resp = req.get('https://api.unsplash.com/photos', params=auth_token)
     prepared = loads(resp.text)
-    image_urls = [item['urls']['small'] for item in prepared]
-    flash(image_urls, 'info')
+    image_data = [{'url' : item['urls']['small'], 'id' : item['id'] }for item in prepared]
     # return homepage
     # return render_template('test.html', title='Testing')
     if not g.user:
-        return render_template('display_all.html', image_urls=image_urls)
+        return render_template('display_all.html', image_data=image_data)
     else:
-        return render_template('display_all.html', image_urls=image_urls)
+        return render_template('display_all.html', image_data=image_data)
 
-@app.route('/<int:image_id>/edit')
+@app.route('/<image_id>/edit')
 def edit(image_id):
     """Show edit page"""
 
-    return render_template('test.html', title='Edit Page Route')
+    return render_template('test.html', title=f'Edit Page Route {image_id}')
 
 ##  Login/Logout/Sign up routes  ###
 

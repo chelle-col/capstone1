@@ -1,11 +1,15 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
-{% for image_url in image_urls %}
-<div>
-    <img src="{{image_url}}" alt="Image Can't be loaded" loading='lazy'>
+<div class="container">
+    <div class="row">
+        {% for image in image_data %}
+        <div class="col m-2">
+            <a href="/{{image['id']}}/edit">
+                <img src="{{image['url']}}" alt="Image Can't be loaded" loading='lazy'>
+            </a>
+        </div>
+        {% endfor %}
+    </div> 
 </div>
-{% endfor %}
-
 {% endblock %}
