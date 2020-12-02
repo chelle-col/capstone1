@@ -23,6 +23,7 @@ connect_db(app)
 ## Seed database through app. Comment out when not in use
 ## seed_db()
 
+UNSPLASH_URL = 'https://api.unsplash.com/photos'
 
 ## Homepage Images routes ##
 
@@ -34,11 +35,11 @@ def homepage():
 def index():
     """Show homepage."""
     # fetch from unsplash
-    resp = req.get('https://api.unsplash.com/photos', params=auth_token)
+    resp = req.get(UNSPLASH_URL, params=auth_token)
     prepared = loads(resp.text)
     image_data = [{'url' : item['urls']['small'], 'id' : item['id'] }for item in prepared]
     # return homepage
-    # return render_template('test.html', title='Testing')
+    # TODO add hover effect with javascript
     if not g.user:
         return render_template('display_all.html', image_data=image_data)
     else:
@@ -47,8 +48,10 @@ def index():
 @app.route('/<image_id>/edit')
 def edit(image_id):
     """Show edit page"""
-
-    return render_template('test.html', title=f'Edit Page Route {image_id}')
+    resp = req.get(UNSPLASH_URL + '/' + image_id, params=auth_token )
+    loaded = loads(resp.text)
+    image_url = loaded['urls']['regular']
+    return render_template('edit.html', image_url=image_url)
 
 ##  Login/Logout/Sign up routes  ###
 
