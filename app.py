@@ -8,6 +8,7 @@ from seed import seed_db
 from requests.auth import HTTPBasicAuth
 from auth_token import auth_token
 from json import loads
+from flask_cors import CORS
 
 CURR_USER_KEY = "curr_user"
 
@@ -19,6 +20,8 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "it's a secret")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 connect_db(app)
+
+CORS(app, resources=r'/image/*')
 
 ## Seed database through app. Comment out when not in use
 ## seed_db()
@@ -37,7 +40,7 @@ def index():
     # fetch from unsplash
     resp = req.get(UNSPLASH_URL, params=auth_token)
     prepared = loads(resp.text)
-    image_data = [{'url' : item['urls']['small'], 'id' : item['id'] }for item in prepared]
+    image_data = [{'url' : item['urls']['thumb'], 'id' : item['id'] }for item in prepared]
     # return homepage
     # TODO add hover effect with javascript
     if not g.user:
@@ -45,13 +48,17 @@ def index():
     else:
         return render_template('display_all.html', image_data=image_data)
 
-@app.route('/<image_id>/edit')
+@app.route('/image/<image_id>/edit')
 def edit(image_id):
     """Show edit page"""
     resp = req.get(UNSPLASH_URL + '/' + image_id, params=auth_token )
     loaded = loads(resp.text)
-    image_url = loaded['urls']['regular']
-    return render_template('edit.html', image_url=image_url)
+    image = {
+        'url' : loaded['urls']['small'],
+        'width' : loaded['width'],
+        'height' : loaded['height']
+    }
+    return render_template('edit.html', image=image)
 
 ##  Login/Logout/Sign up routes  ###
 

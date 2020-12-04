@@ -1,5 +1,47 @@
 {% extends 'base.html' %}
 
+{% block script %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/camanjs/4.1.2/caman.full.min.js"></script>
+<script src="/static/edit.js"></script>
+{% endblock %}
+
 {% block content %}
-<img src="{{image_url}}" alt="">
+<img crossorigin="anonymous" id="image-id" src="{{image['url']}}" alt="" hidden>
+<div class="container">
+    <div class="row justify-content-md-center">
+
+        <div id="sliders" class="col-3 input-group mb-3">
+            <div class="container">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Saturation</span>
+                    <input class="slider" type="range" name="saturation" id="saturation" min="-100" max="100" value="0">
+                </div>
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Vibrance</span>
+                    <input class="slider" type="range" name="vibrance" id="vibrance" min="-100" max="100" value="0">
+                </div>
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Contrast</span>
+                    <input class="slider" type="range" name="contrast" id="contrast" min="-100" max="100" value="0">
+                </div>
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Exposure</span>
+                    <input class="slider" type="range" name="exposure" id="exposure" min="-100" max="100" value="0">
+                </div>
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Hue    </span>
+                    <input class="slider" type="range" name="hue" id="hue" min="1" max="100" value="50">
+                </div>
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Sepia</span>
+                    <input class="slider" type="range" name="sepia" id="sepia" min="1" max="100" value="50">
+                </div>
+            </div>
+        </div>
+
+        <div class="col-4">
+            <canvas id="canvas" width="1080" height="{{image['height']*(1080/image['width'])}}"></canvas>
+        </div>
+    </div>
+</div>
 {% endblock %}
