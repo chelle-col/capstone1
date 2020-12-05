@@ -1,7 +1,7 @@
 .slider{
     appearance: none;
     width: 100%; /* Full-width */
-    height: 10px; /* Specified height */
+    height: 7px; /* Specified height */
     margin: auto;
     background: #000000; /* Black background */
     outline: none; /* Remove outline */

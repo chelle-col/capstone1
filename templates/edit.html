@@ -6,9 +6,9 @@
 {% endblock %}
 
 {% block content %}
-<img crossorigin="anonymous" id="image-id" src="{{image['url']}}" alt="" hidden>
+<img crossorigin="anonymous" id="image" src="{{image['url']}}" alt="" hidden>
 <div class="container">
-    <div class="row justify-content-md-center">
+    <div class="row justify-content-start no-gutters">
 
         <div id="sliders" class="col-3 input-group mb-3">
             <div class="container">
@@ -29,12 +29,12 @@
                     <input class="slider" type="range" name="exposure" id="exposure" min="-100" max="100" value="0">
                 </div>
                 <div class="input-group-prepend">
-                    <span class="input-group-text">Hue    </span>
-                    <input class="slider" type="range" name="hue" id="hue" min="1" max="100" value="50">
+                    <span class="input-group-text">Hue</span>
+                    <input class="slider" type="range" name="hue" id="hue" min="1" max="100" value="1">
                 </div>
                 <div class="input-group-prepend">
                     <span class="input-group-text">Sepia</span>
-                    <input class="slider" type="range" name="sepia" id="sepia" min="1" max="100" value="50">
+                    <input class="slider" type="range" name="sepia" id="sepia" min="1" max="100" value="1">
                 </div>
             </div>
         </div>
