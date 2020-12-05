@@ -5,9 +5,8 @@ function drawPicture() {
     canvasContext.drawImage(img, 0, 0);
 }
 
-function handleSilderChange(evt){
+function handleSilderChange(){
     sliderData = getSliderData();
-    console.log(sliderData)
     Caman('#canvas', $('#image'), function(){
         this.revert(false);
         this.saturation(sliderData.saturation).vibrance(sliderData.vibrance)
@@ -29,13 +28,7 @@ function getSliderData(){
 
 $(function() {
     drawPicture();
-    Caman('#canvas', function () {
-        console.log(this)
-        this.brightness(5);
-        this.render();
-    });
-    $('#sliders').change( (evt)=>{
-        console.log(evt.target)
-        handleSilderChange(evt);
+    $('#sliders').change( ()=>{
+        handleSilderChange();
     })
 });
