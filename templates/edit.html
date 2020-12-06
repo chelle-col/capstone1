@@ -8,39 +8,32 @@
 {% block content %}
 <img crossorigin="anonymous" id="image" src="{{image['url']}}" alt="" hidden>
 <div class="container">
-    <div class="row justify-content-start no-gutters">
+    <div class="row">
 
-        <div id="sliders" class="col-3 input-group mb-3">
+        <div id="sliders" class="col-5 mb-3">
             <div class="container">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">Saturation</span>
-                    <input class="slider" type="range" name="saturation" id="saturation" min="-100" max="100" value="0">
-                </div>
-                <div class="input-group-prepend">
-                    <span class="input-group-text">Vibrance</span>
-                    <input class="slider" type="range" name="vibrance" id="vibrance" min="-100" max="100" value="0">
-                </div>
-                <div class="input-group-prepend">
-                    <span class="input-group-text">Contrast</span>
-                    <input class="slider" type="range" name="contrast" id="contrast" min="-100" max="100" value="0">
-                </div>
-                <div class="input-group-prepend">
-                    <span class="input-group-text">Exposure</span>
-                    <input class="slider" type="range" name="exposure" id="exposure" min="-100" max="100" value="0">
-                </div>
-                <div class="input-group-prepend">
-                    <span class="input-group-text">Hue</span>
-                    <input class="slider" type="range" name="hue" id="hue" min="1" max="100" value="1">
-                </div>
-                <div class="input-group-prepend">
-                    <span class="input-group-text">Sepia</span>
-                    <input class="slider" type="range" name="sepia" id="sepia" min="1" max="100" value="1">
-                </div>
+                {% for slider in sliders %}
+                <span class="input-group-text text-sm text-light bg-dark">{{slider.name.capitalize()}}</span>
+                <div class="input-group  m-3">
+                    <div class="input-group-prepend">
+                        <button class="btn btn-outline-dark btn-sm" type="button" id="button-addon1"><i class="fas fa-caret-left"></i></button>
+                    </div>
+                    <input class="slider form-control" type="range" name="{{slider.name}}" id="{{slider.name}}" min="{{slider.range_min}}" max="{{slider.range_max}}" value="{{slider.value}}">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-dark btn-sm" type="button" id="button-addon1"><i class="fas fa-caret-right"></i></button>
+                    </div>
+                    </div>
+                {% endfor %}
             </div>
         </div>
 
         <div class="col-4">
             <canvas id="canvas" width="1080" height="{{image['height']*(1080/image['width'])}}"></canvas>
+        </div>
+        <div id="buttons" class="col-3 mb-3">
+            {% for button in buttons %}
+            <button>{{button}}</button>
+            {% endfor %}
         </div>
     </div>
 </div>

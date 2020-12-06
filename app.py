@@ -9,6 +9,7 @@ from requests.auth import HTTPBasicAuth
 from auth_token import auth_token
 from json import loads
 from flask_cors import CORS
+from slider import Slider
 
 CURR_USER_KEY = "curr_user"
 
@@ -28,7 +29,7 @@ CORS(app, resources=r'/image/*')
 
 UNSPLASH_URL = 'https://api.unsplash.com/photos'
 
-## Homepage Images routes ##
+## Homepage/Images routes ##
 
 @app.route('/')
 def homepage():
@@ -51,6 +52,7 @@ def index():
 @app.route('/image/<image_id>/edit')
 def edit(image_id):
     """Show edit page"""
+    sliders = get_sliders()
     resp = req.get(UNSPLASH_URL + '/' + image_id, params=auth_token )
     loaded = loads(resp.text)
     image = {
@@ -58,7 +60,7 @@ def edit(image_id):
         'width' : loaded['width'],
         'height' : loaded['height']
     }
-    return render_template('edit.html', image=image)
+    return render_template('edit.html', image=image, sliders=sliders)
 
 ##  Login/Logout/Sign up routes  ###
 
@@ -135,3 +137,14 @@ def add_user_to_g():
         g.user = User.query.get(session[CURR_USER_KEY])
     else:
         g.user = None
+
+def get_sliders():
+    '''Returns a list of sliders with values to use in the html template'''
+    #'saturation', 'vibrance', 'contrast', 'exposure', 'hue', 'sepia'
+    saturation = Slider('saturation', -100, 100, 0)
+    vibrance = Slider('vibrance', -100, 100, 0)
+    contrast = Slider('contrast', -5, 5, 0)
+    exposure = Slider('exposure', -100, 100, 0)
+    hue = Slider('hue', 0, 100, 0)
+    sepia = Slider('sepia', 0, 100, 0)
+    return [saturation, vibrance, contrast, exposure, hue, sepia]

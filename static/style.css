@@ -1,9 +1,10 @@
 .slider{
     appearance: none;
     width: 100%; /* Full-width */
-    height: 7px; /* Specified height */
+    height: 4px; /* Specified height */
     margin: auto;
     background: #000000; /* Black background */
+    border-radius: 25%;
     outline: none; /* Remove outline */
     opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
     -webkit-transition: .2s; /* 0.2 seconds transition on hover */
@@ -11,4 +12,7 @@
 }
 .input-group-text{
     width: 200px;
+}
+div:before{
+    content: none;
 }
