@@ -13,14 +13,14 @@
         <div id="sliders" class="col-5 mb-3">
             <div class="container">
                 {% for slider in sliders %}
-                <span class="input-group-text text-sm text-light bg-dark">{{slider.name.capitalize()}}</span>
+                <label for="{{slider.name}}" class="input-group-text text-sm text-light bg-dark">{{slider.name.capitalize()}}</label>
                 <div class="input-group  m-3">
                     <div class="input-group-prepend">
-                        <button class="btn btn-outline-dark btn-sm" type="button" id="button-addon1"><i class="fas fa-caret-left"></i></button>
+                        <button class="btn btn-outline-dark btn-sm fas fa-caret-left" type="button" data-direction="left"></button>
                     </div>
                     <input class="slider form-control" type="range" name="{{slider.name}}" id="{{slider.name}}" min="{{slider.range_min}}" max="{{slider.range_max}}" value="{{slider.value}}">
                     <div class="input-group-append">
-                        <button class="btn btn-outline-dark btn-sm" type="button" id="button-addon1"><i class="fas fa-caret-right"></i></button>
+                        <button class="btn btn-outline-dark btn-sm fas fa-caret-right" type="button" data-direction="right"></button>
                     </div>
                     </div>
                 {% endfor %}

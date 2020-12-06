@@ -15,6 +15,16 @@ function handleSilderChange(){
     })
 }
 
+function handleSliderButton(evt){
+    parent = evt.target.parentElement
+    if(evt.target.dataset.direction === 'right'){
+        parent.previousElementSibling.value = parseInt(parent.previousElementSibling.value) + 1;
+    }else{
+        parent.nextElementSibling.value = parent.nextElementSibling.value - 1;
+    }
+    handleSilderChange();
+}
+
 function getSliderData(){
     return {
         'saturation' : $('#saturation').val(),
@@ -30,5 +40,7 @@ $(function() {
     drawPicture();
     $('#sliders').change( ()=>{
         handleSilderChange();
+    }).on('click', 'button', (evt)=>{
+        handleSliderButton(evt);
     })
 });
