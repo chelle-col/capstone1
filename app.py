@@ -9,7 +9,7 @@ from requests.auth import HTTPBasicAuth
 from auth_token import auth_token
 from json import loads
 from flask_cors import CORS
-from slider import Slider
+from classes import Slider, Button
 
 CURR_USER_KEY = "curr_user"
 
@@ -53,6 +53,7 @@ def index():
 def edit(image_id):
     """Show edit page"""
     sliders = get_sliders()
+    buttons = get_buttons()
     resp = req.get(UNSPLASH_URL + '/' + image_id, params=auth_token )
     loaded = loads(resp.text)
     image = {
@@ -60,7 +61,7 @@ def edit(image_id):
         'width' : loaded['width'],
         'height' : loaded['height']
     }
-    return render_template('edit.html', image=image, sliders=sliders)
+    return render_template('edit.html', image=image, sliders=sliders, buttons=buttons)
 
 ##  Login/Logout/Sign up routes  ###
 
@@ -121,7 +122,6 @@ def logout():
 ##  Helper Functions  ##
 def do_login(user):
     """Log in user."""
-
     session[CURR_USER_KEY] = user.id
 
 def do_logout():
@@ -132,7 +132,6 @@ def do_logout():
 @app.before_request
 def add_user_to_g():
     """If we're logged in, add curr user to Flask global."""
-    
     if CURR_USER_KEY in session:
         g.user = User.query.get(session[CURR_USER_KEY])
     else:
@@ -148,3 +147,18 @@ def get_sliders():
     hue = Slider('hue', 0, 100, 0)
     sepia = Slider('sepia', 0, 100, 0)
     return [saturation, vibrance, contrast, exposure, hue, sepia]
+
+def get_buttons():
+    """Returns a list of buttons with values to use in html template"""
+    #'vintage', 'lomo', 'clarity', 'sincity', 'sunrise', 
+    #    'crossprocess', 'orangepeel', 'love', 'grungy', 'jarques', 
+    #    'pinhole', 'oldboot', 'glowingsun', 'hazydays', 'hermajesty', 
+    #    'nostalgia', 'hemingway', 'concentrate'
+    vintage = Button('Vintage', 'vintage', 0)
+    lomo = Button('Lomo', 'lomo', 1)
+    clarity = Button('Clarity', 'clarity', 2)
+    sincity = Button('Sin City', 'sincity', 3)
+    sunrise = Button('Sunrise', 'sunrise', 4)
+    crossprocess = Button('Cross Process', 'crossprocess', 5)
+    orangepeel = Button('Orange Peel', 'orangepeel', 6)
+    return [ vintage, lomo, clarity, sincity, sunrise, crossprocess, orangepeel]

@@ -1,7 +1,8 @@
 .slider{
+    all: unset;
     appearance: none;
     width: 100%; /* Full-width */
-    height: 4px; /* Specified height */
+    height: 20px; /* Specified height */
     margin: auto;
     background: #000000; /* Black background */
     border-radius: 25%;

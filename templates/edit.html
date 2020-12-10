@@ -28,13 +28,17 @@
         </div>
 
         <div class="col-4">
-            <canvas id="canvas" width="1080" height="{{image['height']*(1080/image['width'])}}"></canvas>
+            <canvas id="canvas" width="400" height="{{image['height']*(400/image['width'])}}"></canvas>
         </div>
-        <div id="buttons" class="col-3 mb-3">
-            {% for button in buttons %}
-            <button>{{button}}</button>
-            {% endfor %}
+
+        <div class="col side-buttons">
+            <button class="btn btn-sm" id="restore">Restore</button>
         </div>
+    </div>
+    <div id="buttons" class="row">
+        {% for button in buttons %}
+        <button class="col btn btn-secondary m-2" id="{{button.short_name}}" data-id="{{button.id}}">{{button.full_name}}</button>
+        {% endfor %}
     </div>
 </div>
 {% endblock %}
