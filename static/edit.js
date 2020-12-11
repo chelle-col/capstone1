@@ -1,3 +1,6 @@
+// Hold the filters applied to the canvas
+const filters = [];
+
 function drawPicture() {
     // Sets the canvas up
     const canvas = document.getElementById("canvas");
@@ -6,49 +9,52 @@ function drawPicture() {
     canvasContext.drawImage(img, 0, 0);
 }
 
-function camanSwitch(num){
-    switch (num){
-        case 0:
-            Caman('#canvas', function(){
-                this.vintage().render();
-            })
-            break;
-        case 1:
-            Caman('#canvas', function(){
-                this.lomo().render();
-            })
-            break;
-        case 2:
-            Caman('#canvas', function(){
-                this.clarity().render();
-            })
-            break;
-        case 3:
-            Caman('#canvas', function(){
-                this.sinCity().render();
-            })
-            break;
-        case 4:
-            Caman('#canvas', function(){
-                this.sunrise().render();
-            })
-            break;
-        case 5:
-            Caman('#canvas', function(){
-                this.crossProcess().render()
-            })
-            break;
-        case 6:
-            Caman('#canvas', function(){
-                this.orangePeel().render();
-            })
-            break;
-        case 7:
-            Caman('#canvas', function(){
-                
-            })
-            break;  
+function filterToggle(filter){
+    // Add/remove filter to filters
+    if (filters.includes(filter)){
+        const index = filters.indexOf(filter);
+        filters.splice(index, 1);
+    }else{
+        filters.push(filter);
     }
+}
+
+function applyFilters(){
+    // Applies all the filters stored in filters
+    Caman('#canvas', function(){
+        // Restores the orgional image between each update without showing
+        // TODO This introduces a race condtition. Need to fix.
+        this.revert(false);
+        for (index in filters){
+            switch (filters[index]){
+                case 0:
+                    this.vintage();
+                    break;
+                case 1:
+                    this.lomo();
+                    break;
+                case 2:
+                    this.clarity();
+                    break;
+                case 3:
+                    this.sinCity();
+                    break;
+                case 4:
+                    this.sunrise();
+                    break;
+                case 5:
+                    this.crossProcess();
+                    break;
+                case 6:
+                    this.orangePeel();
+                    break;
+                case 7:
+                    
+                    break;  
+            }
+        }
+        this.render();
+    });
 }
 
 function handleSilderChange(){
@@ -60,7 +66,9 @@ function handleSilderChange(){
         this.saturation(sliderData.saturation).vibrance(sliderData.vibrance)
             .contrast(sliderData.contrast).exposure(sliderData.exposure)
             .hue(sliderData.hue).sepia(sliderData.sepia).render();
-    })
+    });
+    // Reapply filters to image
+    applyFilters();
 }
 
 function handleSliderButton(evt){
@@ -72,22 +80,35 @@ function handleSliderButton(evt){
         parent.nextElementSibling.value = parent.nextElementSibling.value - 1;
     }
     handleSilderChange();
+    applyFilters();
 }
 
 function resetSliders(){
-    console.log($('#sliders').children)
+    // Reset all sliders back to base
+    $('#sliders').find('.slider').each((index, $slider)=>{
+        num = $slider.getAttribute('value')
+        $slider.value = num
+    });
+    handleSilderChange();
+}
+
+function resetFilters(){
+    // TODO
+    filters.length = 0;
 }
 
 function handleButtonClick(evt){
-    camanSwitch(parseInt(evt.target.dataset.id));
+    filterToggle(parseInt(evt.target.dataset.id));
+    applyFilters();
 }
 
 function handleSideButtonClick(evt){
     if (evt.target.id === 'restore') {
+        resetFilters();
+        resetSliders();
         Caman('#canvas', function(){
             this.revert();
         });
-        resetSliders();
     }
 }
 
