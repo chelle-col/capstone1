@@ -13,14 +13,14 @@
         <div id="sliders" class="col-5 mb-3">
             <div class="container">
                 {% for slider in sliders %}
-                <label for="{{slider.name}}" class="input-group-text text-sm text-light bg-dark">{{slider.name.capitalize()}}</label>
-                <div class="input-group  m-3">
+                <label for="{{slider.name}}" class="input-group-text text-sm text-light bg-primary">{{slider.name.capitalize()}}</label>
+                <div class="input-group  m-2">
                     <div class="input-group-prepend">
-                        <button class="btn btn-outline-dark btn-sm fas fa-caret-left" type="button" data-direction="left"></button>
+                        <button class="btn btn-outline-secondary btn-sm fas fa-caret-left" type="button" data-direction="left"></button>
                     </div>
                     <input class="slider form-control" type="range" name="{{slider.name}}" id="{{slider.name}}" min="{{slider.range_min}}" max="{{slider.range_max}}" value="{{slider.value}}">
                     <div class="input-group-append">
-                        <button class="btn btn-outline-dark btn-sm fas fa-caret-right" type="button" data-direction="right"></button>
+                        <button class="btn btn-outline-secondarybtn-sm fas fa-caret-right" type="button" data-direction="right"></button>
                     </div>
                     </div>
                 {% endfor %}
@@ -32,7 +32,10 @@
         </div>
 
         <div class="col side-buttons">
-            <button class="btn btn-sm bg-secondary" id="restore">Restore</button>
+            <button class="btn btn-sm bg-secondary m-2 text-light" id="restore">Restore</button>
+            <button class="btn btn-sm bg-secondary m-2 text-light" id="save-filter">Save Filter</button>
+            <button class="btn btn-sm bg-secondary m-2 text-light" id="save-pic-filter">Save Picture <br> With Filter</button>
+            <select name="" id="">User Filters</select>
         </div>
     </div>
     <div id="buttons" class="row">

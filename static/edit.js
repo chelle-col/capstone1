@@ -19,12 +19,14 @@ function filterToggle(filter){
     }
 }
 
-function applyFilters(){
+function applyFilters(doRevert){
     // Applies all the filters stored in filters
     Caman('#canvas', function(){
         // Restores the orgional image between each update without showing
         // TODO This introduces a race condtition. Need to fix.
-        this.revert(false);
+        if (doRevert){
+            this.revert(false);
+        }
         for (index in filters){
             switch (filters[index]){
                 case 0:
@@ -57,18 +59,20 @@ function applyFilters(){
     });
 }
 
-function handleSilderChange(){
+function handleSilderChange(doRevert){
     // Gets the values from the silders and sets them in the proper channels on the canvas
     sliderData = getSliderData();
     Caman('#canvas', function(){
         // Restores the orgional image between each update without drawing to page
-        this.revert(false);
+        if (doRevert){
+            this.revert(false);
+        }
         this.saturation(sliderData.saturation).vibrance(sliderData.vibrance)
             .contrast(sliderData.contrast).exposure(sliderData.exposure)
             .hue(sliderData.hue).sepia(sliderData.sepia).render();
     });
     // Reapply filters to image
-    applyFilters();
+    applyFilters(false);
 }
 
 function handleSliderButton(evt){
@@ -79,8 +83,8 @@ function handleSliderButton(evt){
     }else{
         parent.nextElementSibling.value = parent.nextElementSibling.value - 1;
     }
-    handleSilderChange();
-    applyFilters();
+    handleSilderChange(true);
+    applyFilters(false);
 }
 
 function resetSliders(){
@@ -89,17 +93,16 @@ function resetSliders(){
         num = $slider.getAttribute('value')
         $slider.value = num
     });
-    handleSilderChange();
+    handleSilderChange(false);
 }
 
 function resetFilters(){
-    // TODO
     filters.length = 0;
 }
 
 function handleButtonClick(evt){
     filterToggle(parseInt(evt.target.dataset.id));
-    applyFilters();
+    applyFilters(false);
 }
 
 function handleSideButtonClick(evt){
