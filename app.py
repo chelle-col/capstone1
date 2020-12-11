@@ -1,5 +1,5 @@
 import os
-from flask import Flask, flash, render_template, jsonify, request, session, g, redirect
+from flask import Flask, flash, render_template, jsonify, request, session, g, redirect, send_from_directory
 from models import User, Image, Filter, db, connect_db
 from forms import UserAddForm, UserLoginForm
 import requests as req
@@ -30,6 +30,11 @@ CORS(app, resources=r'/image/*')
 UNSPLASH_URL = 'https://api.unsplash.com/photos'
 
 ## Homepage/Images routes ##
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 @app.route('/')
 def homepage():
@@ -142,7 +147,7 @@ def get_sliders():
     #'saturation', 'vibrance', 'contrast', 'exposure', 'hue', 'sepia'
     saturation = Slider('saturation', -100, 100, 0)
     vibrance = Slider('vibrance', -100, 100, 0)
-    contrast = Slider('contrast', -5, 5, 0)
+    contrast = Slider('contrast', -20, 20, 0)
     exposure = Slider('exposure', -100, 100, 0)
     hue = Slider('hue', 0, 100, 0)
     sepia = Slider('sepia', 0, 100, 0)

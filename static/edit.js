@@ -61,7 +61,7 @@ function handleSilderChange(){
     // Gets the values from the silders and sets them in the proper channels on the canvas
     sliderData = getSliderData();
     Caman('#canvas', function(){
-        // Restores the orgional image between each update
+        // Restores the orgional image between each update without drawing to page
         this.revert(false);
         this.saturation(sliderData.saturation).vibrance(sliderData.vibrance)
             .contrast(sliderData.contrast).exposure(sliderData.exposure)
@@ -115,12 +115,12 @@ function handleSideButtonClick(evt){
 function getSliderData(){
     // Returns the values from the sliders
     return {
-        'saturation' : $('#saturation').val(),
-        'vibrance' : $('#vibrance').val(),
-        'contrast' : $('#contrast').val(),
-        'exposure' : $('#exposure').val(),
-        'hue' : $('#hue').val(),
-        'sepia' : $('#sepia').val()
+        'saturation' : parseInt($('#saturation').val()),
+        'vibrance' : parseInt($('#vibrance').val()),
+        'contrast' : parseInt($('#contrast').val()),
+        'exposure' : parseInt($('#exposure').val()),
+        'hue' : parseInt($('#hue').val()),
+        'sepia' : parseInt($('#sepia').val())
     }
 }
 
