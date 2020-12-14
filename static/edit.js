@@ -1,6 +1,9 @@
 // Hold the filters applied to the canvas
 const filters = [];
 
+// Base URL
+const base_url = 'http://127.0.0.1:5000/'
+
 function drawPicture() {
     // Sets the canvas up
     const canvas = document.getElementById("canvas");
@@ -8,6 +11,8 @@ function drawPicture() {
     const img = document.getElementById("image");
     canvasContext.drawImage(img, 0, 0);
 }
+
+//////// Filter Functions ////////////////////////////////////////////////
 
 function filterToggle(filter){
     // Add/remove filter to filters
@@ -59,6 +64,9 @@ function applyFilters(doRevert){
     });
 }
 
+
+//////////////////////////// Silder Functions //////////////////////////////
+
 function handleSilderChange(doRevert){
     // Gets the values from the silders and sets them in the proper channels on the canvas
     sliderData = getSliderData();
@@ -100,21 +108,6 @@ function resetFilters(){
     filters.length = 0;
 }
 
-function handleButtonClick(evt){
-    filterToggle(parseInt(evt.target.dataset.id));
-    applyFilters(false);
-}
-
-function handleSideButtonClick(evt){
-    if (evt.target.id === 'restore') {
-        resetFilters();
-        resetSliders();
-        Caman('#canvas', function(){
-            this.revert();
-        });
-    }
-}
-
 function getSliderData(){
     // Returns the values from the sliders
     return {
@@ -126,6 +119,43 @@ function getSliderData(){
         'sepia' : parseInt($('#sepia').val())
     }
 }
+
+//////////////////// Handle Functions /////////////////////////////////
+
+function handleButtonClick(evt){
+    filterToggle(parseInt(evt.target.dataset.id));
+    // TODO toggle background to show which are active
+    applyFilters(true);
+    handleSilderChange(false);
+}
+
+function handleSideButtonClick(evt){
+    if (evt.target.id === 'restore') {
+        resetFilters();
+        resetSliders();
+        Caman('#canvas', function(){
+            this.revert();
+        });
+    }else if (evt.target.id === 'save-filter'){
+        $('#filter-name').show();
+    }else if (evt.target.id === 'save-pic-filter'){
+        console.log('clikced save pic and filter')
+    }
+}
+
+async function submitFilter(evt){
+    evt.preventDefault();
+    data = {
+        'name' : $('#name').val(),
+        'range' : getSliderData(),
+        'presets' : filters
+    }
+    console.log(data);
+    resp = await axios.post(base_url + '/api/save_filter');
+    console.log(resp);
+}
+
+/////////////////////////  Main /////////////////////////////////////
 
 $(function() {
     // Main function
@@ -140,5 +170,8 @@ $(function() {
     })
     $('.side-buttons').on('click', (evt)=>{
         handleSideButtonClick(evt);
+    })
+    $('#filter-name').on('submit', (evt)=>{
+        submitFilter(evt);
     })
 });

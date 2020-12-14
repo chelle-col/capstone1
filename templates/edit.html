@@ -7,11 +7,11 @@
 
 {% block content %}
 <img crossorigin="anonymous" id="image" src="{{image['url']}}" alt="" hidden>
-<div class="container">
+
+<div class="container mx-3 p-0">
     <div class="row">
 
-        <div id="sliders" class="col-5 mb-3">
-            <div class="container">
+        <div id="sliders" class="col-4 mb-3">
                 {% for slider in sliders %}
                 <label for="{{slider.name}}" class="input-group-text text-sm text-light bg-primary">{{slider.name.capitalize()}}</label>
                 <div class="input-group  m-2">
@@ -20,24 +20,30 @@
                     </div>
                     <input class="slider form-control" type="range" name="{{slider.name}}" id="{{slider.name}}" min="{{slider.range_min}}" max="{{slider.range_max}}" value="{{slider.value}}">
                     <div class="input-group-append">
-                        <button class="btn btn-outline-secondarybtn-sm fas fa-caret-right" type="button" data-direction="right"></button>
+                        <button class="btn btn-outline-secondary btn-sm fas fa-caret-right" type="button" data-direction="right"></button>
                     </div>
                     </div>
                 {% endfor %}
-            </div>
         </div>
 
         <div class="col">
             <canvas id="canvas" width="400" height="{{image['height']*(400/image['width'])}}"></canvas>
         </div>
 
-        <div class="col side-buttons">
-            <button class="btn btn-sm bg-secondary m-2 text-light" id="restore">Restore</button>
-            <button class="btn btn-sm bg-secondary m-2 text-light" id="save-filter">Save Filter</button>
-            <button class="btn btn-sm bg-secondary m-2 text-light" id="save-pic-filter">Save Picture <br> With Filter</button>
+        <div class="col-2 side-buttons justify-contents-center">
+            <button class="btn btn-sm bg-primary m-2 text-light" id="restore">Restore</button>
+            <button class="btn btn-sm bg-primary m-2 text-light" id="save-filter">Save Filter</button>
+
+            <form action="" id="filter-name" style="display: none;">
+                <input type="text" name="name" id="name" size="15"  placeholder="filter name"></input>
+                <button class="btn btn-sm btn-secondary">Save</button>
+            </form>
+
+            <button class="btn btn-sm bg-primary m-2 text-light" id="save-pic-filter">Save Picture <br> With Filter</button>
             <select name="" id="">User Filters</select>
         </div>
     </div>
+
     <div id="buttons" class="row">
         {% for button in buttons %}
         <button class="btn btn-secondary m-2" id="{{button.short_name}}" data-id="{{button.id}}">{{button.full_name}}</button>

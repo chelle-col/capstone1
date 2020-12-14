@@ -57,6 +57,10 @@ def index():
 @app.route('/image/<image_id>/edit')
 def edit(image_id):
     """Show edit page"""
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/login")
+    
     sliders = get_sliders()
     buttons = get_buttons()
     resp = req.get(UNSPLASH_URL + '/' + image_id, params=auth_token )
@@ -122,6 +126,17 @@ def logout():
     do_logout()
     flash('Successfully logged out', 'success')
     return redirect('/')
+
+### API Routes ###
+@app.route('/api/save_filter', methods=['POST'])
+def save_filter():
+    data = request.json()['data']
+    return data
+
+@app.route('/api/save_pic_filter', methods=['POST'])
+def save_pic_filter():
+
+    return 'got it'
 
 
 ##  Helper Functions  ##
