@@ -130,7 +130,7 @@ def logout():
 ### API Routes ###
 @app.route('/api/save_filter', methods=['POST'])
 def save_filter():
-    data = request.json()['data']
+    data = request.get_json()['data']
     return data
 
 @app.route('/api/save_pic_filter', methods=['POST'])

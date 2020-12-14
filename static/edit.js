@@ -151,7 +151,7 @@ async function submitFilter(evt){
         'presets' : filters
     }
     console.log(data);
-    resp = await axios.post(base_url + '/api/save_filter');
+    resp = await axios.post(base_url + '/api/save_filter', {data: JSON.stringify(data)});
     console.log(resp);
 }
 
