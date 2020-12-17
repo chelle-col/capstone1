@@ -53,16 +53,6 @@ class Image(db.Model):
     url = db.Column(db.Text)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-class Filter(db.Model):
-    """Store the name and data of custom & default filters"""
-    __tablename__ = 'filters'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    full_name = db.Column(db.Text, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    brightness = db.Column(db.Text)
-    contrast = db.Column(db.Text)
-    saturation = db.Column(db.Text)
-
 class ImageFilter(db.Model):
     """Connection of images and filters"""
 
@@ -75,6 +65,42 @@ class ImageFilter(db.Model):
     )
 
     filter_id = db.Column(
+        db.Integer,
+        db.ForeignKey('filters.id', ondelete="cascade"),
+        primary_key=True,
+    )
+
+class Filter(db.Model):
+    """Store the name and data of custom & default filters"""
+    __tablename__ = 'filters'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    full_name = db.Column(db.Text, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    saturation = db.Column(db.Text, default=0)
+    vibrance = db.Column(db.Text, default=0)
+    contrast = db.Column(db.Text, default=0)
+    exposure = db.Column(db.Text, default=0)
+    hue = db.Column(db.Text, default=0)
+    sepia = db.Column(db.Text, default=0)
+
+    user = db.relationship('User', backref='user_filters')
+    preset_filters = db.relationship('Filter', secondary='image_filters')
+
+    def serialize(self):
+        return f'<Filter {self.id} {self.full_name}>'
+
+class FilterToFilter(db.Model):
+    """Connection of images and filters"""
+
+    __tablename__ = 'filter_to_filter'
+
+    filter_id_1 = db.Column(
+        db.Integer,
+        db.ForeignKey('filters.id', ondelete="cascade"),
+        primary_key=True,
+    )
+
+    filter_id_2 = db.Column(
         db.Integer,
         db.ForeignKey('filters.id', ondelete="cascade"),
         primary_key=True,

@@ -18,6 +18,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = (
     os.environ.get('DATABASE_URL', 'postgres:///capstone1'))
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "it's a secret")
+app.config['SQLALCHEMY_ECHO'] = False
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 connect_db(app)
@@ -25,7 +26,7 @@ connect_db(app)
 CORS(app, resources=r'/image/*')
 
 ## Seed database through app. Comment out when not in use
-## seed_db()
+# seed_db()
 
 UNSPLASH_URL = 'https://api.unsplash.com/photos'
 
@@ -63,6 +64,7 @@ def edit(image_id):
     
     sliders = get_sliders()
     buttons = get_buttons()
+    user_filters = g.user.user_filters
     resp = req.get(UNSPLASH_URL + '/' + image_id, params=auth_token )
     loaded = loads(resp.text)
     image = {
@@ -70,7 +72,7 @@ def edit(image_id):
         'width' : loaded['width'],
         'height' : loaded['height']
     }
-    return render_template('edit.html', image=image, sliders=sliders, buttons=buttons)
+    return render_template('edit.html', image=image, sliders=sliders, buttons=buttons, user_filters=user_filters)
 
 ##  Login/Logout/Sign up routes  ###
 
@@ -131,12 +133,42 @@ def logout():
 @app.route('/api/save_filter', methods=['POST'])
 def save_filter():
     data = request.get_json()['data']
-    return data
+    load_data = loads(data)
+    ranges = load_data['ranges']
+    presets = load_data['presets']
+    new_filter = Filter(
+        user_id=g.user.id,
+        full_name=load_data['name'],
+        saturation=ranges['saturation'],
+        vibrance=ranges['vibrance'],
+        contrast=ranges['contrast'],
+        exposure=ranges['exposure'],
+        hue=ranges['hue'],
+        sepia=ranges['sepia']
+    )
+    # for filter_id in presets:
+    #     filter = Filter.query.get(filter_id)
+    #     new_filter.preset_filters.append(filter)
+    # try:
+    db.session.add(new_filter)
+    db.session.commit()
+    # except IntegrityError:
+    #     db.session.rollback()
+    return f'presets # is {new_filter.serialize()}'
 
 @app.route('/api/save_pic_filter', methods=['POST'])
 def save_pic_filter():
 
     return 'got it'
+
+@app.route('/api/<int:filter_id>', methods=['GET'])
+def get_filter(filter_id):
+    filter = Filter.query.get_or_404(filter_id)
+    return {
+        'name' : filter.full_name,
+        'ranges' : [], # use object keys to get column names and comprehension for values
+        'presets' : [preset.id for preset in filter.preset_filters]
+    }
 
 
 ##  Helper Functions  ##
@@ -166,6 +198,7 @@ def get_sliders():
     exposure = Slider('exposure', -100, 100, 0)
     hue = Slider('hue', 0, 100, 0)
     sepia = Slider('sepia', 0, 100, 0)
+    # Add more here, remember to add to edit.js too
     return [saturation, vibrance, contrast, exposure, hue, sepia]
 
 def get_buttons():

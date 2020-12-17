@@ -23,6 +23,10 @@ div:before{
     content: none;
 }
 
+.hide{
+    display: none;
+}
+
 input[type=range]::-webkit-slider-thumb {
     all: unset;
     width: 9px;

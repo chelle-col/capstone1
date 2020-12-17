@@ -34,13 +34,22 @@
             <button class="btn btn-sm bg-primary m-2 text-light" id="restore">Restore</button>
             <button class="btn btn-sm bg-primary m-2 text-light" id="save-filter">Save Filter</button>
 
-            <form action="" id="filter-name" style="display: none;">
-                <input type="text" name="name" id="name" size="15"  placeholder="filter name"></input>
+            <form action="" id="filter-name-form" class="hide">
+                <input type="text" name="filter-name" id="filter-name" size="15"  placeholder="filter name"></input>
                 <button class="btn btn-sm btn-secondary">Save</button>
             </form>
 
-            <button class="btn btn-sm bg-primary m-2 text-light" id="save-pic-filter">Save Picture <br> With Filter</button>
-            <select name="" id="">User Filters</select>
+            <button class="btn btn-sm btn-primary m-2 text-light" id="save-pic-filter">Save Picture <br> With Filter</button>
+            <form action="" id="picture-name-form" class="hide">
+                <input type="text" name="picture-name" id="picture-name" size="15"  placeholder="Picture name"></input>
+                <button class="btn btn-sm btn-secondary">Save</button>
+            </form>
+            <select name="user_filters" id="user_filters">
+                <option value="">--Your Filters--</option>
+                {% for filter in user_filters %}
+                <option value="{{filter.id}}">{{filter.full_name}}</option>
+                {% endfor %}
+            </select>
         </div>
     </div>
 

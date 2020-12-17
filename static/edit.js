@@ -28,7 +28,7 @@ function applyFilters(doRevert){
     // Applies all the filters stored in filters
     Caman('#canvas', function(){
         // Restores the orgional image between each update without showing
-        // TODO This introduces a race condtition. Need to fix.
+        // TODO This introduces a race condtition. Need to fix. Doesn't break anything
         if (doRevert){
             this.revert(false);
         }
@@ -62,6 +62,10 @@ function applyFilters(doRevert){
         }
         this.render();
     });
+}
+
+function resetFilterButtons(){
+    
 }
 
 
@@ -124,7 +128,9 @@ function getSliderData(){
 
 function handleButtonClick(evt){
     filterToggle(parseInt(evt.target.dataset.id));
-    // TODO toggle background to show which are active
+    // TODO restore btn-secondary on restore
+    evt.target.classList.toggle('btn-secondary')
+    evt.target.classList.toggle('btn-primary')
     applyFilters(true);
     handleSilderChange(false);
 }
@@ -137,22 +143,32 @@ function handleSideButtonClick(evt){
             this.revert();
         });
     }else if (evt.target.id === 'save-filter'){
-        $('#filter-name').show();
+        $('#filter-name-form').show();
     }else if (evt.target.id === 'save-pic-filter'){
-        console.log('clikced save pic and filter')
+        $('picture-name-form').show();
     }
+}
+
+async function handleUserFilters(evt){
+    console.log('handle called', evt.target.id)
+    // resp = await axios.get(base_url + '/api')
 }
 
 async function submitFilter(evt){
     evt.preventDefault();
+   $('filter-name-form').hide();
     data = {
-        'name' : $('#name').val(),
-        'range' : getSliderData(),
+        'name' : $('#filter-name').val(),
+        'ranges' : getSliderData(),
         'presets' : filters
     }
-    console.log(data);
     resp = await axios.post(base_url + '/api/save_filter', {data: JSON.stringify(data)});
-    console.log(resp);
+    // TODO do something with response????
+}
+
+async function submitImage(evt){
+    $('picture-name-form').hide();
+    evt.preventDefault();
 }
 
 /////////////////////////  Main /////////////////////////////////////
@@ -161,17 +177,24 @@ $(function() {
     // Main function
     drawPicture();
     $('#sliders').change( ()=>{
-        handleSilderChange();
+        handleSilderChange(true);
     }).on('click', 'button', (evt)=>{
         handleSliderButton(evt);
     })
-    $('#buttons').on('click', (evt)=>{
+    $('#buttons').on('click', 'button', (evt)=>{
         handleButtonClick(evt);
     })
     $('.side-buttons').on('click', (evt)=>{
         handleSideButtonClick(evt);
     })
-    $('#filter-name').on('submit', (evt)=>{
+    $('#filter-name-form').on('submit', (evt)=>{
         submitFilter(evt);
+    })
+    $('#picture-name-form').on('submit', (evt)=>{
+        console.log('submitted')
+    })
+    $('#user_filter').change( (evt)=>{
+        console.log('changed user filter')
+        handleUserFilters(evt);
     })
 });
