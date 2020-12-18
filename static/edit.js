@@ -1,5 +1,5 @@
 // Hold the filters applied to the canvas
-const filters = [];
+let filters = [];
 
 // Base URL
 const base_url = 'http://127.0.0.1:5000/'
@@ -24,38 +24,43 @@ function filterToggle(filter){
     }
 }
 
+function filterBackgroundToggle(id){
+    $(`#${id}`).toggleClass('btn-primary');
+    $(`#${id}`).toggleClass('btn-secondary');
+}
+
 function applyFilters(doRevert){
     // Applies all the filters stored in filters
     Caman('#canvas', function(){
-        // Restores the orgional image between each update without showing
         // TODO This introduces a race condtition. Need to fix. Doesn't break anything
+        // Restores the orgional image between each update without showing
         if (doRevert){
             this.revert(false);
         }
         for (index in filters){
             switch (filters[index]){
-                case 0:
+                case 1:
                     this.vintage();
                     break;
-                case 1:
+                case 2:
                     this.lomo();
                     break;
-                case 2:
+                case 3:
                     this.clarity();
                     break;
-                case 3:
+                case 4:
                     this.sinCity();
                     break;
-                case 4:
+                case 5:
                     this.sunrise();
                     break;
-                case 5:
+                case 6:
                     this.crossProcess();
                     break;
-                case 6:
+                case 7:
                     this.orangePeel();
                     break;
-                case 7:
+                case 8:
                     
                     break;  
             }
@@ -65,7 +70,10 @@ function applyFilters(doRevert){
 }
 
 function resetFilterButtons(){
-    
+    for(filter in filters){
+        $(`#buttons`).find(`[data-id=${filters[filter]}]`).toggleClass('btn-secondary')
+        $(`#buttons`).find(`[data-id=${filters[filter]}]`).toggleClass('btn-primary')
+    }
 }
 
 
@@ -109,6 +117,7 @@ function resetSliders(){
 }
 
 function resetFilters(){
+    resetFilterButtons();
     filters.length = 0;
 }
 
@@ -124,13 +133,16 @@ function getSliderData(){
     }
 }
 
+function setSliderData(sliderData){
+    for (slider in sliderData){
+        $(`#${slider}`).val(sliderData[slider])
+    }
+}
 //////////////////// Handle Functions /////////////////////////////////
 
 function handleButtonClick(evt){
     filterToggle(parseInt(evt.target.dataset.id));
-    // TODO restore btn-secondary on restore
-    evt.target.classList.toggle('btn-secondary')
-    evt.target.classList.toggle('btn-primary')
+    filterBackgroundToggle(evt.target.id);
     applyFilters(true);
     handleSilderChange(false);
 }
@@ -150,8 +162,11 @@ function handleSideButtonClick(evt){
 }
 
 async function handleUserFilters(evt){
-    console.log('handle called', evt.target.id)
-    // resp = await axios.get(base_url + '/api')
+    resp = await axios.get(base_url + `/api/filter/${evt.target.value}`)
+    setSliderData(resp.data.ranges);
+    handleSilderChange(true);
+    filters = resp.data.presets;
+    applyFilters(false);
 }
 
 async function submitFilter(evt){
@@ -163,7 +178,8 @@ async function submitFilter(evt){
         'presets' : filters
     }
     resp = await axios.post(base_url + '/api/save_filter', {data: JSON.stringify(data)});
-    // TODO do something with response????
+    // TODO do something with response???? Let user know filter was saved successfully/not
+    console.log(resp.data)
 }
 
 async function submitImage(evt){
@@ -193,8 +209,7 @@ $(function() {
     $('#picture-name-form').on('submit', (evt)=>{
         console.log('submitted')
     })
-    $('#user_filter').change( (evt)=>{
-        console.log('changed user filter')
+    $('#user-filters').change((evt)=>{
         handleUserFilters(evt);
     })
 });

@@ -146,27 +146,31 @@ def save_filter():
         hue=ranges['hue'],
         sepia=ranges['sepia']
     )
-    # for filter_id in presets:
-    #     filter = Filter.query.get(filter_id)
-    #     new_filter.preset_filters.append(filter)
-    # try:
     db.session.add(new_filter)
     db.session.commit()
-    # except IntegrityError:
-    #     db.session.rollback()
-    return f'presets # is {new_filter.serialize()}'
+
+    if len(presets) > 0:
+        for id in presets:
+            filter = Filter.query.get(id)
+            new_filter.preset_filters.append(filter)
+        db.session.commit()
+
+    #  TODO add error for blank name
+    return new_filter.serialize()
 
 @app.route('/api/save_pic_filter', methods=['POST'])
 def save_pic_filter():
 
     return 'got it'
 
-@app.route('/api/<int:filter_id>', methods=['GET'])
+@app.route('/api/filter/<int:filter_id>', methods=['GET'])
 def get_filter(filter_id):
     filter = Filter.query.get_or_404(filter_id)
+    columns = Filter.__table__.columns.keys()
+    sliders = columns[3:]
     return {
         'name' : filter.full_name,
-        'ranges' : [], # use object keys to get column names and comprehension for values
+        'ranges' : {slider:getattr(filter, slider) for slider in sliders},
         'presets' : [preset.id for preset in filter.preset_filters]
     }
 
@@ -207,11 +211,11 @@ def get_buttons():
     #    'crossprocess', 'orangepeel', 'love', 'grungy', 'jarques', 
     #    'pinhole', 'oldboot', 'glowingsun', 'hazydays', 'hermajesty', 
     #    'nostalgia', 'hemingway', 'concentrate'
-    vintage = Button('Vintage', 'vintage', 0)
-    lomo = Button('Lomo', 'lomo', 1)
-    clarity = Button('Clarity', 'clarity', 2)
-    sincity = Button('Sin City', 'sincity', 3)
-    sunrise = Button('Sunrise', 'sunrise', 4)
-    crossprocess = Button('Cross Process', 'crossprocess', 5)
-    orangepeel = Button('Orange Peel', 'orangepeel', 6)
+    vintage = Button('Vintage', 'vintage', 1)
+    lomo = Button('Lomo', 'lomo', 2)
+    clarity = Button('Clarity', 'clarity', 3)
+    sincity = Button('Sin City', 'sincity', 4)
+    sunrise = Button('Sunrise', 'sunrise', 5)
+    crossprocess = Button('Cross Process', 'crossprocess', 6)
+    orangepeel = Button('Orange Peel', 'orangepeel', 7)
     return [ vintage, lomo, clarity, sincity, sunrise, crossprocess, orangepeel]

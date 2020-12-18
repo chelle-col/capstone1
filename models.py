@@ -69,6 +69,22 @@ class ImageFilter(db.Model):
         db.ForeignKey('filters.id', ondelete="cascade"),
         primary_key=True,
     )
+class Filter2Filter(db.Model):
+    """Connection of images and filters"""
+
+    __tablename__ = 'filter_2_filter'
+
+    filter_id_1 = db.Column(
+        db.Integer,
+        db.ForeignKey('filters.id', ondelete="cascade"),
+        primary_key=True
+    )
+
+    filter_id_2 = db.Column(
+        db.Integer,
+        db.ForeignKey('filters.id', ondelete="cascade"),
+        primary_key=True
+    )
 
 class Filter(db.Model):
     """Store the name and data of custom & default filters"""
@@ -84,24 +100,12 @@ class Filter(db.Model):
     sepia = db.Column(db.Text, default=0)
 
     user = db.relationship('User', backref='user_filters')
-    preset_filters = db.relationship('Filter', secondary='image_filters')
+    
+    preset_filters = db.relationship('Filter', 
+                                        secondary='filter_2_filter',
+                                        primaryjoin=(Filter2Filter.filter_id_1 == id),
+                                        secondaryjoin=(Filter2Filter.filter_id_2 == id
+                                    ))
 
     def serialize(self):
         return f'<Filter {self.id} {self.full_name}>'
-
-class FilterToFilter(db.Model):
-    """Connection of images and filters"""
-
-    __tablename__ = 'filter_to_filter'
-
-    filter_id_1 = db.Column(
-        db.Integer,
-        db.ForeignKey('filters.id', ondelete="cascade"),
-        primary_key=True,
-    )
-
-    filter_id_2 = db.Column(
-        db.Integer,
-        db.ForeignKey('filters.id', ondelete="cascade"),
-        primary_key=True,
-    )

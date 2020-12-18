@@ -44,7 +44,7 @@
                 <input type="text" name="picture-name" id="picture-name" size="15"  placeholder="Picture name"></input>
                 <button class="btn btn-sm btn-secondary">Save</button>
             </form>
-            <select name="user_filters" id="user_filters">
+            <select name="user-filters" id="user-filters">
                 <option value="">--Your Filters--</option>
                 {% for filter in user_filters %}
                 <option value="{{filter.id}}">{{filter.full_name}}</option>
