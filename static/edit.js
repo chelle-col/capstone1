@@ -165,8 +165,11 @@ async function handleUserFilters(evt){
     resp = await axios.get(base_url + `/api/filter/${evt.target.value}`)
     setSliderData(resp.data.ranges);
     handleSilderChange(true);
+
+    resetFilterButtons();
     filters = resp.data.presets;
     applyFilters(false);
+    resetFilterButtons();
 }
 
 async function submitFilter(evt){
