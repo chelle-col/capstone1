@@ -134,11 +134,24 @@ def logout():
 def save_filter():
     data = request.get_json()['data']
     load_data = loads(data)
-    ranges = load_data['ranges']
-    presets = load_data['presets']
+    new_filter = add_filter_2_db(name=load_data['name'], ranges=load_data['ranges'])
+
+    if len(load_data['presets']) > 0:
+        add_presets_2_filter(new_filter=new_filter, presets=load_data['presets'])
+
+    #  TODO add error for blank name
+    return new_filter.serialize()
+
+def add_presets_2_filter(new_filter, presets):
+    for id in presets:
+        filter = Filter.query.get(id)
+        new_filter.preset_filters.append(filter)
+    db.session.commit()
+
+def add_filter_2_db(name, ranges):
     new_filter = Filter(
         user_id=g.user.id,
-        full_name=load_data['name'],
+        full_name=name,
         saturation=ranges['saturation'],
         vibrance=ranges['vibrance'],
         contrast=ranges['contrast'],
@@ -148,20 +161,18 @@ def save_filter():
     )
     db.session.add(new_filter)
     db.session.commit()
-
-    if len(presets) > 0:
-        for id in presets:
-            filter = Filter.query.get(id)
-            new_filter.preset_filters.append(filter)
-        db.session.commit()
-
-    #  TODO add error for blank name
-    return new_filter.serialize()
+    return new_filter
 
 @app.route('/api/save_pic_filter', methods=['POST'])
 def save_pic_filter():
-
-    return 'got it'
+    data = request.get_json()['data']
+    load_data = loads(data)
+    new_filter = add_filter_2_db(name=load_data['name'], ranges=load_data['ranges'])
+    add_presets_2_filter(new_filter=new_filter, presets=load_data['presets'])
+    new_image = Image(url=load_data['image'], user_id=g.user.id, filter_id=new_filter.id)
+    db.session.add_all([new_filter, new_image])
+    db.session.commit()
+    return new_image.serialize()
 
 @app.route('/api/filter/<int:filter_id>', methods=['GET'])
 def get_filter(filter_id):

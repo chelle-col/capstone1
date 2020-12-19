@@ -155,9 +155,9 @@ function handleSideButtonClick(evt){
             this.revert();
         });
     }else if (evt.target.id === 'save-filter'){
-        $('#filter-name-form').show();
+        $('#filter-name-form').toggleClass('hide');
     }else if (evt.target.id === 'save-pic-filter'){
-        $('picture-name-form').show();
+        $('#picture-name-form').toggleClass('hide');
     }
 }
 
@@ -174,7 +174,7 @@ async function handleUserFilters(evt){
 
 async function submitFilter(evt){
     evt.preventDefault();
-   $('filter-name-form').hide();
+   $('#filter-name-form').toggleClass('hide');
     data = {
         'name' : $('#filter-name').val(),
         'ranges' : getSliderData(),
@@ -186,8 +186,16 @@ async function submitFilter(evt){
 }
 
 async function submitImage(evt){
-    $('picture-name-form').hide();
+    $('#picture-name-form').toggleClass('hide');
     evt.preventDefault();
+    data =  {
+        'name' : $('#picture-name').val(),
+        'image' : $('#image').attr('src'),
+        'ranges' : getSliderData(),
+        'presets' : filters
+    }
+    resp = await axios.post(base_url + '/api/save_pic_filter', {data: JSON.stringify(data)})
+    console.log(resp)
 }
 
 /////////////////////////  Main /////////////////////////////////////
@@ -210,7 +218,7 @@ $(function() {
         submitFilter(evt);
     })
     $('#picture-name-form').on('submit', (evt)=>{
-        console.log('submitted')
+        submitImage(evt);
     })
     $('#user-filters').change((evt)=>{
         handleUserFilters(evt);

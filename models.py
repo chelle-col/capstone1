@@ -46,29 +46,6 @@ class User(db.Model):
 
         return False
 
-class Image(db.Model):
-    """Store the image information"""
-    __tablename__ = 'images'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    url = db.Column(db.Text)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-
-class ImageFilter(db.Model):
-    """Connection of images and filters"""
-
-    __tablename__ = 'image_filters'
-
-    image_id = db.Column(
-        db.Integer,
-        db.ForeignKey('images.id', ondelete="cascade"),
-        primary_key=True,
-    )
-
-    filter_id = db.Column(
-        db.Integer,
-        db.ForeignKey('filters.id', ondelete="cascade"),
-        primary_key=True,
-    )
 class Filter2Filter(db.Model):
     """Connection of images and filters"""
 
@@ -109,3 +86,16 @@ class Filter(db.Model):
 
     def serialize(self):
         return f'<Filter {self.id} {self.full_name}>'
+
+class Image(db.Model):
+    """Store the image information"""
+    __tablename__ = 'images'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    url = db.Column(db.Text)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    filter_id = db.Column(db.Integer, db.ForeignKey('filters.id'))
+
+    filter = db.relationship('Filter')
+
+    def serialize(self):
+        return f'<Image {self.id} {self.url}>'
