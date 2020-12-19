@@ -181,8 +181,13 @@ async function submitFilter(evt){
         'presets' : filters
     }
     resp = await axios.post(base_url + '/api/save_filter', {data: JSON.stringify(data)});
-    // TODO do something with response???? Let user know filter was saved successfully/not
-    console.log(resp.data)
+    showSavedData(data['name']);
+}
+
+function showSavedData(name){
+    $('div bg-info').removeClass('hide');
+    $('#info-div').removeClass('hide');
+    $('#info-span').text(`Sucessfully saved ${name}`);
 }
 
 async function submitImage(evt){
@@ -195,7 +200,7 @@ async function submitImage(evt){
         'presets' : filters
     }
     resp = await axios.post(base_url + '/api/save_pic_filter', {data: JSON.stringify(data)})
-    console.log(resp)
+    showSavedData(data['name'])
 }
 
 /////////////////////////  Main /////////////////////////////////////
