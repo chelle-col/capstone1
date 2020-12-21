@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block script%}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/camanjs/4.1.2/caman.full.min.js"></script>
+<script src="/static/list.js"></script>
+{% endblock %}
+
+{% block content %}
+<h1>{{g.user.username}}'s Filters</h1>
+{% if filters %}
+<div class="container row">
+    {% for filter in filters %}
+    <div class="col filter">
+        <h3>{{filter.full_name}}</h3>
+        <img class="image" src="/static/Ankh-Mirror-TutanchamunTomb.jpg" 
+                data-caman="saturation({{filter.saturation}}) 
+                vibrance({{filter.vibrance}}) contrast({{filter.contrast}}) 
+                exposure({{filter.exposure}}) hue({{filter.hue}}) 
+                sepia({{filter.sepia}}) 
+                {% for preset in filter.preset_filters %}
+                {{preset.full_name}}()
+                {% endfor %}
+                " alt="">
+        <div class="remove"><a class="text-light fas fa-trash-alt" href="#"></a></div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+    <div class="container"> There seems to be nothing here. Better get to creating</div>
+{% endif %}
+
+{% endblock %}

@@ -74,17 +74,19 @@ def edit(image_id):
     }
     return render_template('edit.html', image=image, sliders=sliders, buttons=buttons, user_filters=user_filters)
 
-@app.route('/my/edit_filters')
-def show_edit_filters():
-    return render_template('test.html', title='Edit Filters Route')
+@app.route('/my_filters')
+def show_my_filters():
+    filters = g.user.user_filters
+    return render_template('list_filters.html', title='Edit Filters Route', filters=filters)
 
-@app.rotue('/my/edit_pictures')
-def show_edit_pictures():
+@app.route('/my_pictures')
+def show_my_pictures():
     return render_template('test.html', title='Edit Picures Route')
 
-@app.route('/my/edit_profile')
-def show_edit_profile():
+@app.route('/my_profile')
+def show_my_profile():
     return render_template('test.html', title='Edit Profile Route')
+    
 ##  Login/Logout/Sign up routes  ###
 
 @app.route('/signup', methods=['Get', 'POST'])
