@@ -25,6 +25,7 @@ function filterToggle(filter){
 }
 
 function filterBackgroundToggle(id){
+    // Uses the id of an element to toggle between primary and secondary
     $(`#${id}`).toggleClass('btn-primary');
     $(`#${id}`).toggleClass('btn-secondary');
 }
@@ -70,6 +71,7 @@ function applyFilters(doRevert){
 }
 
 function resetFilterButtons(){
+    // Useing the filters to turn off primary
     for(filter in filters){
         $(`#buttons`).find(`[data-id=${filters[filter]}]`).toggleClass('btn-secondary')
         $(`#buttons`).find(`[data-id=${filters[filter]}]`).toggleClass('btn-primary')
@@ -117,6 +119,7 @@ function resetSliders(){
 }
 
 function resetFilters(){
+    // Sets the filter, buttons and array
     resetFilterButtons();
     filters.length = 0;
 }
@@ -134,6 +137,7 @@ function getSliderData(){
 }
 
 function setSliderData(sliderData){
+    // Sets the slider data to the enw slider data
     for (slider in sliderData){
         $(`#${slider}`).val(sliderData[slider])
     }
@@ -141,6 +145,7 @@ function setSliderData(sliderData){
 //////////////////// Handle Functions /////////////////////////////////
 
 function handleButtonClick(evt){
+    // Handles when the user presses one of the filter buttons
     filterToggle(parseInt(evt.target.dataset.id));
     filterBackgroundToggle(evt.target.id);
     applyFilters(true);
@@ -148,6 +153,7 @@ function handleButtonClick(evt){
 }
 
 function handleSideButtonClick(evt){
+    // Handles when the user pushes one of the side buttons, restore/save filter/save filter and pic
     if (evt.target.id === 'restore') {
         resetFilters();
         resetSliders();
@@ -162,6 +168,7 @@ function handleSideButtonClick(evt){
 }
 
 async function handleUserFilters(evt){
+    // 
     resp = await axios.get(base_url + `/api/filter/${evt.target.value}`)
     setSliderData(resp.data.ranges);
     handleSilderChange(true);

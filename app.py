@@ -74,6 +74,17 @@ def edit(image_id):
     }
     return render_template('edit.html', image=image, sliders=sliders, buttons=buttons, user_filters=user_filters)
 
+@app.route('/my/edit_filters')
+def show_edit_filters():
+    return render_template('test.html', title='Edit Filters Route')
+
+@app.rotue('/my/edit_pictures')
+def show_edit_pictures():
+    return render_template('test.html', title='Edit Picures Route')
+
+@app.route('/my/edit_profile')
+def show_edit_profile():
+    return render_template('test.html', title='Edit Profile Route')
 ##  Login/Logout/Sign up routes  ###
 
 @app.route('/signup', methods=['Get', 'POST'])
