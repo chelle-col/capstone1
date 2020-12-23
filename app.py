@@ -81,7 +81,8 @@ def show_my_filters():
 
 @app.route('/my_pictures')
 def show_my_pictures():
-    return render_template('test.html', title='Edit Picures Route')
+    pictures = g.user.pics
+    return render_template('list_pictures.html', pictures=pictures)
 
 @app.route('/my_profile')
 def show_my_profile():

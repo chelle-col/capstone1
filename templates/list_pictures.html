@@ -1,0 +1,35 @@
+{% extends 'list.html' %}
+
+{% block script%}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/camanjs/4.1.2/caman.full.min.js"></script>
+<script src="/static/listPics.js"></script>
+{% endblock %}
+
+{% block _loop_ %}
+
+{% if pictures %}
+<h1 class="text-center">{{g.user.username}}'s Filters</h1>
+<div class="container row">
+    {% for picture in pictures %}
+    <div class="col">
+        <h3 class="ml-3">{{picture.filter.full_name}}</h3>
+        <div class="filter" data-id="{{picture.id}}">
+            <img class="image" src="{{picture.url}}" 
+                    data-caman="saturation({{picture.filter.saturation}}) 
+                    vibrance({{picture.filter.vibrance}}) contrast({{picture.filter.contrast}}) 
+                    exposure({{picture.filter.exposure}}) hue({{picture.filter.hue}}) 
+                    sepia({{picture.filter.sepia}}) 
+                    {% for preset in picture.filter.preset_filters %}
+                    {{preset.full_name}}() 
+                    {% endfor %}
+                    " alt="{{picture.filter.full_name}}">
+            <div class="remove"><a class="text-light fas fa-trash-alt" href="#"></a></div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+    <div class="container"> There seems to be nothing here. Better get to creating</div>
+{% endif %}
+
+{% endblock %}

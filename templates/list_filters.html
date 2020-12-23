@@ -1,42 +1,18 @@
-{% extends 'base.html' %}
+{% extends 'list.html' %}
 
 {% block script%}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/camanjs/4.1.2/caman.full.min.js"></script>
-<script src="/static/list.js"></script>
+<script src="/static/listFilts.js"></script>
 {% endblock %}
 
-{% block content %}
-<div class="modal fade" id="alert-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel"></h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <p class="modal-text"></p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary modal-button" data-dismiss="modal">Save changes</button>
-        </div>
-      </div>
-    </div>
-  </div>
-<h1 class="text-center">{{g.user.username}}'s Filters</h1>
+{% block _loop_ %}
 {% if filters %}
+<h1 class="text-center">{{g.user.username}}'s Filters</h1>
 <div class="container row">
     {% for filter in filters %}
     <div class="col">
         <h3 class="ml-3">{{filter.full_name}}</h3>
-        <div class="filter" data-id="{{filter.id}}" 
-            data-hasFilter="{% if filter.image %}
-                true
-            {% else %}
-                false
-            {% endif %}">
+        <div class="filter" data-id="{{filter.id}}">
             <img class="image" src="/static/Ankh-Mirror-TutanchamunTomb.jpg" 
                     data-caman="saturation({{filter.saturation}}) 
                     vibrance({{filter.vibrance}}) contrast({{filter.contrast}}) 
@@ -54,5 +30,4 @@
 {% else %}
     <div class="container"> There seems to be nothing here. Better get to creating</div>
 {% endif %}
-
 {% endblock %}
