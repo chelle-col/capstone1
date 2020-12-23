@@ -6,22 +6,48 @@
 {% endblock %}
 
 {% block content %}
-<h1>{{g.user.username}}'s Filters</h1>
+<div class="modal fade" id="alert-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel"></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p class="modal-text"></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary modal-button" data-dismiss="modal">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<h1 class="text-center">{{g.user.username}}'s Filters</h1>
 {% if filters %}
 <div class="container row">
     {% for filter in filters %}
-    <div class="col filter">
-        <h3>{{filter.full_name}}</h3>
-        <img class="image" src="/static/Ankh-Mirror-TutanchamunTomb.jpg" 
-                data-caman="saturation({{filter.saturation}}) 
-                vibrance({{filter.vibrance}}) contrast({{filter.contrast}}) 
-                exposure({{filter.exposure}}) hue({{filter.hue}}) 
-                sepia({{filter.sepia}}) 
-                {% for preset in filter.preset_filters %}
-                {{preset.full_name}}()
-                {% endfor %}
-                " alt="">
-        <div class="remove"><a class="text-light fas fa-trash-alt" href="#"></a></div>
+    <div class="col">
+        <h3 class="ml-3">{{filter.full_name}}</h3>
+        <div class="filter" data-id="{{filter.id}}" 
+            data-hasFilter="{% if filter.image %}
+                true
+            {% else %}
+                false
+            {% endif %}">
+            <img class="image" src="/static/Ankh-Mirror-TutanchamunTomb.jpg" 
+                    data-caman="saturation({{filter.saturation}}) 
+                    vibrance({{filter.vibrance}}) contrast({{filter.contrast}}) 
+                    exposure({{filter.exposure}}) hue({{filter.hue}}) 
+                    sepia({{filter.sepia}}) 
+                    {% for preset in filter.preset_filters %}
+                    {{preset.full_name}}() 
+                    {% endfor %}
+                    " alt="{{filter.full_name}}">
+            <div class="remove"><a class="text-light fas fa-trash-alt" href="#"></a></div>
+        </div>
     </div>
     {% endfor %}
 </div>

@@ -40,7 +40,12 @@ input[type=range]::-webkit-slider-thumb {
 
   .image{
       width: 332px;
-      height: 331px;
+      /* height: 331px; */
+  }
+
+  .filter{
+      position: relative;
+      width: 332px;
   }
 
   .filter:hover .remove{

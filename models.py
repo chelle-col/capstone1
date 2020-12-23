@@ -68,7 +68,7 @@ class Filter(db.Model):
     __tablename__ = 'filters'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     full_name = db.Column(db.Text, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='cascade'))
     saturation = db.Column(db.Text, default=0)
     vibrance = db.Column(db.Text, default=0)
     contrast = db.Column(db.Text, default=0)
@@ -92,10 +92,11 @@ class Image(db.Model):
     __tablename__ = 'images'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     url = db.Column(db.Text)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    filter_id = db.Column(db.Integer, db.ForeignKey('filters.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='cascade'))
+    filter_id = db.Column(db.Integer, db.ForeignKey('filters.id', ondelete='cascade'))
 
-    filter = db.relationship('Filter')
+    filter = db.relationship('Filter', backref='image')
+    user = db.relationship('User', backref='pics')
 
     def serialize(self):
         return f'<Image {self.id} {self.url}>'

@@ -86,7 +86,7 @@ def show_my_pictures():
 @app.route('/my_profile')
 def show_my_profile():
     return render_template('test.html', title='Edit Profile Route')
-    
+
 ##  Login/Logout/Sign up routes  ###
 
 @app.route('/signup', methods=['Get', 'POST'])
@@ -197,6 +197,16 @@ def get_filter(filter_id):
         'ranges' : {slider:getattr(filter, slider) for slider in sliders},
         'presets' : [preset.id for preset in filter.preset_filters]
     }
+
+@app.route('/api/remove_filter', methods=['POST'])
+def remove_filter():
+    data = request.get_json()['data']
+    load_data = int(loads(data))
+    filter = Filter.query.get(load_data)
+    g.user.user_filters.remove(filter)
+    db.session.delete(filter)
+    db.session.commit()
+    return f'deleted'
 
 
 ##  Helper Functions  ##
