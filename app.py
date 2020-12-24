@@ -8,7 +8,7 @@ from seed import seed_db
 from requests.auth import HTTPBasicAuth
 from auth_token import auth_token
 from json import loads
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from classes import Slider, Button
 
 CURR_USER_KEY = "curr_user"
@@ -80,6 +80,7 @@ def show_my_filters():
     return render_template('list_filters.html', title='Edit Filters Route', filters=filters)
 
 @app.route('/my_pictures')
+@cross_origin()
 def show_my_pictures():
     pictures = g.user.pics
     return render_template('list_pictures.html', pictures=pictures)
@@ -207,8 +208,17 @@ def remove_filter():
     g.user.user_filters.remove(filter)
     db.session.delete(filter)
     db.session.commit()
-    return f'deleted'
+    return 'deleted'
 
+@app.route('/api/remove_picture', methods=['POST'])
+def remove_picture():
+    data = request.get_json()['data']
+    load_data = int(loads(data))
+    picture = Image.query.get(load_data)
+    g.user.pics.remove(picture)
+    db.session.delete(picture)
+    db.session.commit()
+    return 'deleted'
 
 ##  Helper Functions  ##
 def do_login(user):
