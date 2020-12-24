@@ -8,7 +8,7 @@ from seed import seed_db
 from requests.auth import HTTPBasicAuth
 from auth_token import auth_token
 from json import loads
-from flask_cors import CORS, cross_origin
+from flask_cors import cross_origin
 from classes import Slider, Button
 
 CURR_USER_KEY = "curr_user"
@@ -22,8 +22,6 @@ app.config['SQLALCHEMY_ECHO'] = False
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 connect_db(app)
-
-CORS(app, resources=r'/image/*')
 
 ## Seed database through app. Comment out when not in use
 # seed_db()
@@ -56,6 +54,7 @@ def index():
         return render_template('display_all.html', image_data=image_data)
 
 @app.route('/image/<image_id>/edit')
+@cross_origin()
 def edit(image_id):
     """Show edit page"""
     if not g.user:

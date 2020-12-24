@@ -40,7 +40,6 @@ input[type=range]::-webkit-slider-thumb {
 
   .image{
       width: 332px;
-      /* height: 331px; */
   }
 
   .filter{
@@ -59,4 +58,22 @@ input[type=range]::-webkit-slider-thumb {
 	right: 0;
 	top: 0;
 	display: none;
+  }
+
+  .display-image:hover .edit{
+    display: block;
+  }
+
+  .edit{
+    font-size: 40pt;
+    text-shadow: 2px 2px #000000;
+    background-color: rgba(0, 43, 54, .3);
+    position: absolute;
+	right: 10px;
+    top: 0px;
+    text-align: center;
+    padding-top: 48%;
+    width: 100%;
+    height: 100%;
+    display: none;
   }

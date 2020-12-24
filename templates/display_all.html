@@ -4,9 +4,10 @@
 <div class="container">
     <div class="row">
         {% for image in image_data %}
-        <div class="col m-2">
+        <div class="col m-2 d-flex align-items-center display-image">
+            <img src="{{image['url']}}" alt="Image Can't be loaded" loading='lazy'>
             <a href="/image/{{image['id']}}/edit">
-                <img src="{{image['url']}}" alt="Image Can't be loaded" loading='lazy'>
+                <div class="edit text-light fas fa-paint-roller"></div>
             </a>
         </div>
         {% endfor %}
