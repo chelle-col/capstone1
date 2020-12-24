@@ -33,7 +33,7 @@ function filterBackgroundToggle(id){
 function applyFilters(doRevert){
     // Applies all the filters stored in filters
     Caman('#canvas', function(){
-        // TODO This introduces a race condtition. Need to fix. Doesn't break anything
+        // This introduces a race condtition. Need to fix at a later date. Doesn't break anything
         // Restores the orgional image between each update without showing
         if (doRevert){
             this.revert(false);
@@ -62,8 +62,38 @@ function applyFilters(doRevert){
                     this.orangePeel();
                     break;
                 case 8:
-                    
+                    this.love();
+                    break;
+                case 9:
+                    this.grungy();
+                    break;
+                case 10:
+                    this.jarques();
                     break;  
+                case 11:
+                    this.pinhole();
+                    break;
+                case 12:
+                    this.oldBoot();
+                    break;
+                case 13:
+                    this.glowingSun();
+                    break;  
+                case 14:
+                    this.hazyDays();
+                    break;  
+                case 15:
+                    this.herMajesty();
+                    break;  
+                case 16:
+                    this.nostalgia();
+                    break;  
+                case 17:
+                    this.hemingway();
+                    break;  
+                case 18:
+                    this.concentrate();
+                    break;                                                                
             }
         }
         this.render();
@@ -71,7 +101,7 @@ function applyFilters(doRevert){
 }
 
 function resetFilterButtons(){
-    // Useing the filters to turn off primary
+    // Useing the filters to turn off primary background
     for(filter in filters){
         $(`#buttons`).find(`[data-id=${filters[filter]}]`).toggleClass('btn-secondary')
         $(`#buttons`).find(`[data-id=${filters[filter]}]`).toggleClass('btn-primary')
@@ -84,6 +114,7 @@ function resetFilterButtons(){
 function handleSilderChange(doRevert){
     // Gets the values from the silders and sets them in the proper channels on the canvas
     sliderData = getSliderData();
+    console.log(sliderData.noise)
     Caman('#canvas', function(){
         // Restores the orgional image between each update without drawing to page
         if (doRevert){
@@ -91,7 +122,7 @@ function handleSilderChange(doRevert){
         }
         this.saturation(sliderData.saturation).vibrance(sliderData.vibrance)
             .contrast(sliderData.contrast).exposure(sliderData.exposure)
-            .hue(sliderData.hue).sepia(sliderData.sepia).render();
+            .hue(sliderData.hue).sepia(sliderData.sepia).noise(sliderData.noise).render();
     });
     // Reapply filters to image
     applyFilters(false);
@@ -132,7 +163,8 @@ function getSliderData(){
         'contrast' : parseInt($('#contrast').val()),
         'exposure' : parseInt($('#exposure').val()),
         'hue' : parseInt($('#hue').val()),
-        'sepia' : parseInt($('#sepia').val())
+        'sepia' : parseInt($('#sepia').val()),
+        'noise' : parseInt($('#noise').val())
     }
 }
 
@@ -168,19 +200,23 @@ function handleSideButtonClick(evt){
 }
 
 async function handleUserFilters(evt){
-    // 
+    // Gets the filters from the database that the user has saved and applies them to the image
     resp = await axios.get(base_url + `/api/filter/${evt.target.value}`)
+    // Use the slider data from the database
     setSliderData(resp.data.ranges);
     handleSilderChange(true);
-
+    // Set the filter buttons all to base
     resetFilterButtons();
     filters = resp.data.presets;
     applyFilters(false);
+    // Toggle the buttons to show which are active
     resetFilterButtons();
 }
 
 async function submitFilter(evt){
+    // Sends the filter information to the database to be saved
     evt.preventDefault();
+    // Hide the form on submit
    $('#filter-name-form').toggleClass('hide');
     data = {
         'name' : $('#filter-name').val(),
@@ -188,16 +224,19 @@ async function submitFilter(evt){
         'presets' : filters
     }
     resp = await axios.post(base_url + '/api/save_filter', {data: JSON.stringify(data)});
+    // Feedback to show the user their filter was saved
     showSavedData(data['name']);
 }
 
 function showSavedData(name){
+    // Puts the save into the dom to show saved filters and images
     $('div bg-info').removeClass('hide');
     $('#info-div').removeClass('hide');
     $('#info-span').text(`Sucessfully saved ${name}`);
 }
 
 async function submitImage(evt){
+    // Submits the filter and image to be saved to the database
     $('#picture-name-form').toggleClass('hide');
     evt.preventDefault();
     data =  {
@@ -207,6 +246,7 @@ async function submitImage(evt){
         'presets' : filters
     }
     resp = await axios.post(base_url + '/api/save_pic_filter', {data: JSON.stringify(data)})
+    // Show that the data got saved to the database
     showSavedData(data['name'])
 }
 

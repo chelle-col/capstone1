@@ -75,6 +75,7 @@ class Filter(db.Model):
     exposure = db.Column(db.Text, default=0)
     hue = db.Column(db.Text, default=0)
     sepia = db.Column(db.Text, default=0)
+    noise = db.Column(db.Text, default=0)
 
     user = db.relationship('User', backref='user_filters')
     

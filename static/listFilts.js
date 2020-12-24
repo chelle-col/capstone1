@@ -15,7 +15,7 @@ $(function(){
 
         // popup to confirm removal
         $('#alert-modal').find('.modal-title').text('Irreversable Changes');
-        $('#alert-modal').find('.modal-body').text(`Any image/filter information associated with filter ${evt.target.parentElement.parentElement.previousElementSibling.innerText} will be deleted. Contiue?`);
+        $('#alert-modal').find('.modal-body').text(`Any image information associated with filter ${evt.target.parentElement.parentElement.previousElementSibling.innerText} will be deleted. Contiue?`);
         $('#alert-modal').modal(focus=true)
   
         $('.modal-button').on('click', ()=>{

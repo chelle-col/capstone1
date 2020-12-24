@@ -43,7 +43,7 @@ def homepage():
 def index():
     """Show homepage."""
     # fetch from unsplash
-    resp = req.get(UNSPLASH_URL, params=auth_token)
+    resp = req.get(UNSPLASH_URL, params={'client_id' : auth_token, 'per_page': '20'})
     prepared = loads(resp.text)
     image_data = [{'url' : item['urls']['thumb'], 'id' : item['id'] }for item in prepared]
     # return homepage
@@ -64,7 +64,7 @@ def edit(image_id):
     sliders = get_sliders()
     buttons = get_buttons()
     user_filters = g.user.user_filters
-    resp = req.get(UNSPLASH_URL + '/' + image_id, params=auth_token )
+    resp = req.get(UNSPLASH_URL + '/' + image_id, params={'client_id': auth_token} )
     loaded = loads(resp.text)
     image = {
         'url' : loaded['urls']['small'],
@@ -86,7 +86,7 @@ def show_my_pictures():
 
 @app.route('/my_profile')
 def show_my_profile():
-    return render_template('test.html', title='Edit Profile Route')
+    return render_template('title.html', title='Profile root left in to show how to expand this app.')
 
 ##  Login/Logout/Sign up routes  ###
 
@@ -246,8 +246,8 @@ def get_sliders():
     exposure = Slider('exposure', -100, 100, 0)
     hue = Slider('hue', 0, 100, 0)
     sepia = Slider('sepia', 0, 100, 0)
-    # Add more here, remember to add to edit.js too
-    return [saturation, vibrance, contrast, exposure, hue, sepia]
+    noise = Slider('noise', 0, 100, 0)
+    return [saturation, vibrance, contrast, exposure, hue, sepia, noise]
 
 def get_buttons():
     """Returns a list of buttons with values to use in html template"""
@@ -262,4 +262,17 @@ def get_buttons():
     sunrise = Button('Sunrise', 'sunrise', 5)
     crossprocess = Button('Cross Process', 'crossprocess', 6)
     orangepeel = Button('Orange Peel', 'orangepeel', 7)
-    return [ vintage, lomo, clarity, sincity, sunrise, crossprocess, orangepeel]
+    love = Button('Love', 'love', 8)
+    grungy = Button('Grungy', 'grungy', 9)
+    jarques = Button('Jarques', 'jarques', 10)
+    pinhole = Button('Pinhole', 'pinhole', 11)
+    oldboot = Button('Old Boot', 'oldboot', 12)
+    glowingsun = Button('Glowing Sun', 'glowingsun', 13)
+    hazydays = Button('Hazy Days', 'hazydays', 14)
+    hermajesty = Button('Her Majesty', 'hermajesty', 15)
+    nostalgia = Button('Nostalgia', 'nostalgia', 16)
+    hemingway = Button('Hemingway', 'hemingway', 17)
+    concentrate = Button('Concentrate', 'concentrate', 18)
+    return [ vintage, lomo, clarity, sincity, sunrise, crossprocess, orangepeel, love,
+                grungy, jarques, pinhole, oldboot, glowingsun, hazydays, hermajesty,
+                nostalgia, hemingway, concentrate]

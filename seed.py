@@ -15,6 +15,17 @@ def seed_db():
     sunrise = Filter(full_name='sunrise')
     crossprocess = Filter(full_name='crossprocess')
     orangepeel = Filter(full_name='orangepeel')
+    love = Filter(full_name='love')
+    grungy = Filter(full_name='grungy')
+    jarques = Filter(full_name='jarques')
+    pinhole = Filter(full_name='pinhole')
+    oldboot = Filter(full_name='oldboot')
+    glowingsun = Filter(full_name='glowingsun')
+    hazydays = Filter(full_name='hazydays')
+    hermajesty = Filter(full_name='hermajesty')
+    nostalgia = Filter(full_name='nostalgia')
+    hemingway = Filter(full_name='hemingway')
+    concentrate = Filter(full_name='concentrate')
 
     db.session.add_all([vintage, lomo, clarity, sincity, sunrise, crossprocess, orangepeel])
     db.session.commit()
@@ -24,6 +35,7 @@ def drop_everything():
     Workaround for SQLAlchemy not doing DROP ## CASCADE for drop_all()
     (https://github.com/pallets/flask-sqlalchemy/issues/722)
     """
+    ## This is here because the db doesnt always drop in the right order
     from sqlalchemy.engine.reflection import Inspector
     from sqlalchemy.schema import DropConstraint, DropTable, MetaData, Table
 
