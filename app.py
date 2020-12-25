@@ -29,6 +29,7 @@ seed_db()
 UNSPLASH_URL = 'https://api.unsplash.com/photos'
 
 ## Homepage/Images routes ##
+## Added to make a new git commit for heroku ##
 
 @app.route('/favicon.ico')
 def favicon():
