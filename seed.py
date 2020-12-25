@@ -69,3 +69,5 @@ def drop_everything():
         con.execute(DropTable(table))
 
     trans.commit()
+
+seed_db()
