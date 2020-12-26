@@ -3,7 +3,7 @@ from models import User, Image, Filter
 
 
 def seed_db():
-    drop_everything()
+    # drop_everything()
     db.create_all()
 
     bla = User.signup(username='bla', password='blablabla', email='bla@bla.com', image_url='')
