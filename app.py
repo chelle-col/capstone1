@@ -24,7 +24,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 connect_db(app)
 
 ## Seed database through app. Comment out when not in use
-# seed_db()
+seed_db()
 
 UNSPLASH_URL = 'https://api.unsplash.com/photos'
 
