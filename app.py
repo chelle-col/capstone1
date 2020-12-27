@@ -47,13 +47,12 @@ def index():
     prepared = loads(resp.text)
     image_data = [{'url' : item['urls']['thumb'], 'id' : item['id'] }for item in prepared]
     # return homepage
-    # TODO add hover effect with javascript
     if not g.user:
         return render_template('display_all.html', image_data=image_data)
     else:
         return render_template('display_all.html', image_data=image_data)
 
-@app.route('/image/<image_id>/edit')
+@app.route('/image/<image_id>/edit', methods=['GET'])
 @cross_origin()
 def edit(image_id):
     """Show edit page"""
@@ -68,10 +67,30 @@ def edit(image_id):
     loaded = loads(resp.text)
     image = {
         'url' : loaded['urls']['small'],
-        'width' : loaded['width'],
-        'height' : loaded['height']
+        'width' : 400, # loaded['width'],
+        'height' : loaded['height']*(400/loaded['width'])
     }
-    return render_template('edit.html', image=image, sliders=sliders, buttons=buttons, user_filters=user_filters)
+    return render_template('edit.html', image=image, 
+                            sliders=sliders, buttons=buttons, 
+                            user_filters=user_filters)
+
+@app.route('/my_image/<int:id>/edit')
+def my_image_edit(id):
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/login")
+    
+    sliders = get_sliders()
+    buttons = get_buttons()
+    user_filters = g.user.user_filters
+    image_byte_string = Image.query.get_or_404(id)
+    return render_template('edit.html', image=image_byte_string, 
+                            sliders=sliders, buttons=buttons, 
+                            user_filters=user_filters)
+
+@app.route('/image/upload')
+def upload():
+    return render_template('upload.html')
 
 @app.route('/my_filters')
 def show_my_filters():
@@ -218,6 +237,16 @@ def remove_picture():
     db.session.delete(picture)
     db.session.commit()
     return 'deleted'
+
+@app.route('/api/upload_picture', methods=['POST'])
+def upload_picture():
+    data = request.get_json()['data']
+    load_data = loads(data)
+    image = Image(user_id=g.user.id, url=load_data['image'], 
+                    width=load_data['width'], height=load_data['height'])
+    db.session.add(image)
+    db.session.commit()
+    return jsonify(image.id)
 
 ##  Helper Functions  ##
 def do_login(user):

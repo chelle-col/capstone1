@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block script %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/camanjs/4.1.2/caman.full.min.js"></script>
+<script src="{{ url_for('static', filename='upload.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+
+<div class="border border-primary preview-wrapper">
+    <canvas id="canvas"></canvas>
+</div>
+ 
+<div class="container  editor-buttons">
+    <label class="text-light" for="upload-file">Upload a Picture</label>
+    <br>
+    <input class="btn btn-primary" type="file" accept="image/*" id="upload-file" placeholder="Upload a Picture" />
+    <button class="btn btn-primary" id="upload">Save and Go to Edit</button>
+</div>
+
+{% endblock %}

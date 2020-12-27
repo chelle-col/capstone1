@@ -2,10 +2,11 @@
 
 {% block script %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/camanjs/4.1.2/caman.full.min.js"></script>
-<script src="/static/edit.js"></script>
+<script src="{{ url_for('static', filename='edit.js') }}"></script>
 {% endblock %}
 
 {% block content %}
+
 <img crossorigin="anonymous" id="image" src="{{image['url']}}" alt="" hidden>
 
 <div class="container mx-3 p-0">
@@ -27,7 +28,7 @@
         </div>
 
         <div class="col">
-            <canvas id="canvas" width="400" height="{{image['height']*(400/image['width'])}}"></canvas>
+            <canvas id="canvas" width="{{image['width']}}" height="{{image['height']}}"></canvas>
         </div>
 
         <div class="col-2 side-buttons justify-contents-center">

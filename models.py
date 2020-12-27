@@ -94,6 +94,8 @@ class Image(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     url = db.Column(db.Text)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='cascade'))
+    width = db.Column(db.Integer)
+    height = db.Column(db.Integer)
     filter_id = db.Column(db.Integer, db.ForeignKey('filters.id', ondelete='cascade'))
 
     filter = db.relationship('Filter', backref='image')

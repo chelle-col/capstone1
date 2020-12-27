@@ -2,7 +2,7 @@
 let filters = [];
 
 // Base URL
-const base_url = 'http://127.0.0.1:5000/'
+const base_url = 'https://mycapstone1.herokuapp'
 
 function drawPicture() {
     // Sets the canvas up
@@ -10,6 +10,11 @@ function drawPicture() {
     const canvasContext = canvas.getContext("2d");
     const img = document.getElementById("image");
     canvasContext.drawImage(img, 0, 0);
+    Caman('#canvas', function(){
+        this.resize({
+            width: 400
+        }).render();
+    })
 }
 
 //////// Filter Functions ////////////////////////////////////////////////
