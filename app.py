@@ -271,6 +271,7 @@ def remove_picture():
     return 'deleted'
 # api/image/upload
 @app.route('/api/upload_picture', methods=['POST'])
+@cross_origin()
 def upload_picture():
     data = request.get_json()['data']
     load_data = loads(data)
