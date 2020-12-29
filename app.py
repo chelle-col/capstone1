@@ -258,9 +258,9 @@ def get_filter(filter_id):
 @cross_origin()
 def remove_filter():
     data = request.get_json()['data']
-    load_data = int(loads(data))
+    load_data = loads(data)
     user =  User.query.get(load_data['id'])
-    filter = Filter.query.get(load_data)
+    filter = Filter.query.get(load_data['filter_id'])
     user.user_filters.remove(filter)
     db.session.delete(filter)
     db.session.commit()
@@ -270,9 +270,9 @@ def remove_filter():
 @cross_origin()
 def remove_picture():
     data = request.get_json()['data']
-    load_data = int(loads(data))
+    load_data = loads(data)
     user =  User.query.get(load_data['id'])
-    picture = Image.query.get(load_data)
+    picture = Image.query.get(load_data['filter_id'])
     user.pics.remove(picture)
     db.session.delete(picture)
     db.session.commit()
