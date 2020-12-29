@@ -6,7 +6,6 @@ async function updateFilter(evt, id){
         'ranges' : sliderData
     }
     resp = await axios.post(base_url + '/api/update_filter', {data: JSON.stringify(data)})
-    console.log(resp.data)
 }
 
 $(function(){
