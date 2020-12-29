@@ -58,7 +58,8 @@ def index():
 @app.route('/image/<image_id>/new', methods=['GET'])
 @cross_origin()
 def new(image_id):
-    """Show new page"""
+    """Show new edit page, and to put a filter on images that don't have one yet"""
+    # Future stuff When coming from upload page two images are saved in db - change to one
     if not g.user:
         flash("Access unauthorized.", "danger")
         return redirect("/login")
@@ -67,9 +68,9 @@ def new(image_id):
     buttons = get_buttons()
     user_filters = g.user.user_filters
     whole_image = Image.query.get_or_404(image_id)
-    
+    # If it has a unsplash id then it comes from there - use it
     if whole_image.unsplash_id:
-        unsplash_id = whole_image.unsplash_id ## db_image diesnt have unsplash
+        unsplash_id = whole_image.unsplash_id 
         resp = req.get(UNSPLASH_URL + '/' + unsplash_id, params={'client_id': auth_token} )
         loaded = loads(resp.text)
         image = {
@@ -81,6 +82,7 @@ def new(image_id):
         return render_template('edit.html', image=image, 
                                 sliders=sliders, buttons=buttons, 
                                 user_filters=user_filters)
+    # Else is for images in our db
     else:
         return render_template('edit.html', image=whole_image, 
                                 sliders=sliders, buttons=buttons, 
@@ -89,6 +91,7 @@ def new(image_id):
 @app.route('/image/<image_id>/edit', methods=['GET'])
 @cross_origin()
 def edit(image_id):
+    """Edit current images that a user has"""
     if not g.user:
         flash("Access unauthorized.", "danger")
         return redirect("/login")
@@ -98,6 +101,8 @@ def edit(image_id):
     user_filters = g.user.user_filters
     image = Image.query.get_or_404(image_id)
     filter_id = image.filter.id
+    # if an image url starts with data tag it is from db
+    # Future note: Change to look like new route
     if image.url[:4] == 'data':
         return render_template('edit.html',  image=image, 
                             sliders=sliders, buttons=buttons, 
@@ -113,37 +118,28 @@ def edit(image_id):
                             sliders=sliders, buttons=buttons, 
                             user_filters=user_filters, filter_id=filter_id)
 
-@app.route('/my_image/<int:id>/edit', methods=['GET'])
-def my_image_edit(id):
-    if not g.user:
-        flash("Access unauthorized.", "danger")
-        return redirect("/login")
-    
-    sliders = get_sliders()
-    buttons = get_buttons()
-    user_filters = g.user.user_filters
-    image = Image.query.get_or_404(id)
-    return render_template('edit.html', image=image, 
-                            sliders=sliders, buttons=buttons, 
-                            user_filters=user_filters)
-
 @app.route('/image/upload')
 def upload():
+    """Display the page for uploading an image to our db"""
     return render_template('upload.html')
 
 @app.route('/my_filters')
 def show_my_filters():
+    """Display all of a users filters on a single image"""
     filters = g.user.user_filters
-    return render_template('list_filters.html', title='Edit Filters Route', filters=filters)
+    return render_template('list_filters.html', filters=filters)
 
 @app.route('/my_pictures')
 @cross_origin()
 def show_my_pictures():
+    """Display all of a users picture with the filters on them"""
     pictures = g.user.pics
     return render_template('list_pictures.html', pictures=pictures)
 
 @app.route('/my_profile')
 def show_my_profile():
+    """Displays profile page"""
+    # Not fully implmented. Left for future me
     return render_template('title.html', title='Profile root left in to show how to expand this app.')
 
 ##  Login/Logout/Sign up routes  ###
@@ -200,10 +196,13 @@ def logout():
     return redirect('/')
 
 ### API Routes ###
+# I know the names are wrong. Will Fix soon
+# TODO add routes to give different sized images
 #'/api/filter/new'
 @app.route('/api/save_filter', methods=['POST'])
 @cross_origin()
 def save_filter():
+    """Adds filter to db and returns the new filter"""
     data = request.get_json()['data']
     load_data = loads(data)
     user =  User.query.get(load_data['id'])
@@ -215,30 +214,11 @@ def save_filter():
     #  TODO add error for blank name
     return new_filter.serialize()
 
-def add_presets_2_filter(new_filter, presets):
-    for id in presets:
-        filter = Filter.query.get(id)
-        new_filter.preset_filters.append(filter)
-    db.session.commit()
-
-def add_filter_2_db(name, ranges, user):
-    new_filter = Filter(
-        user_id=user.id,
-        full_name=name,
-        saturation=ranges['saturation'],
-        vibrance=ranges['vibrance'],
-        contrast=ranges['contrast'],
-        exposure=ranges['exposure'],
-        hue=ranges['hue'],
-        sepia=ranges['sepia']
-    )
-    db.session.add(new_filter)
-    db.session.commit()
-    return new_filter
 #'/api/image/filter/new'
 @app.route('/api/save_pic_filter', methods=['POST'])
 @cross_origin()
 def save_pic_filter():
+    """Adds filter and image to db and returns the new filter"""
     data = request.get_json()['data']
     load_data = loads(data)
     user =  User.query.get(load_data['id'])
@@ -253,6 +233,7 @@ def save_pic_filter():
 @app.route('/api/filter/<int:filter_id>', methods=['GET'])
 @cross_origin()
 def get_filter(filter_id):
+    """Returns the requested filter"""
     filter = Filter.query.get_or_404(filter_id)
     columns = Filter.__table__.columns.keys()
     sliders = columns[3:]
@@ -265,6 +246,7 @@ def get_filter(filter_id):
 @app.route('/api/remove_filter', methods=['POST'])
 @cross_origin()
 def remove_filter():
+    """Removes the filter from db"""
     data = request.get_json()['data']
     load_data = loads(data)
     user =  User.query.get(load_data['id'])
@@ -277,6 +259,7 @@ def remove_filter():
 @app.route('/api/remove_picture', methods=['POST'])
 @cross_origin()
 def remove_picture():
+    """Removes the picture and all filter data from db"""
     data = request.get_json()['data']
     load_data = loads(data)
     user =  User.query.get(load_data['id'])
@@ -289,6 +272,7 @@ def remove_picture():
 @app.route('/api/upload_picture', methods=['POST'])
 @cross_origin()
 def upload_picture():
+    """Adds the base64 representation of the image to the db"""
     data = request.get_json()['data']
     load_data = loads(data)
     user =  User.query.get(load_data['id'])
@@ -302,27 +286,13 @@ def upload_picture():
 @app.route('/api/update_filter', methods=['POST'])
 @cross_origin()
 def update_filter():
+    """Updates the filter in the db and returns the filter"""
     data = request.get_json()['data']
     load_data = loads(data)
     Filter.query.filter_by(id=load_data['filter_id']).update(load_data['ranges'])
     db.session.commit()
     filter = Filter.query.get(load_data['filter_id'])
     return filter.serialize()
-
-def convert_image(raw_im):
-    image_bytes = raw_im.replace('data:image/png;base64,', '')
-    im = img.open(BytesIO(b64decode(image_bytes)))
-    resized_im = im.resize((350, round(im.size[1]*350/im.size[0])))
-    buffered = BytesIO()
-    resized_im.save(buffered, format="PNG")
-    im_encode = b64encode(buffered.getvalue())
-    im_data = im_encode.decode()
-    new_image = {
-        'width' : resized_im.size[0],
-        'height' : resized_im.size[1],
-        'url' : "data:image/png;base64," + im_data
-    }
-    return new_image
 
 ##  Helper Functions  ##
 def do_login(user):
@@ -381,3 +351,51 @@ def get_buttons():
     return [ vintage, lomo, clarity, sincity, sunrise, crossprocess, orangepeel, love,
                 grungy, jarques, pinhole, oldboot, glowingsun, hazydays, hermajesty,
                 nostalgia, hemingway, concentrate]
+
+def add_presets_2_filter(new_filter, presets):
+    """Takes an array and places them on the filter"""
+    for id in presets:
+        filter = Filter.query.get(id)
+        new_filter.preset_filters.append(filter)
+    db.session.commit()
+
+def add_filter_2_db(name, ranges, user):
+    """Adds the new filter to the db"""
+    new_filter = Filter(
+        # Choose not to use a for loop for optimization
+        # Still really slow though
+        user_id=user.id,
+        full_name=name,
+        saturation=ranges['saturation'],
+        vibrance=ranges['vibrance'],
+        contrast=ranges['contrast'],
+        exposure=ranges['exposure'],
+        hue=ranges['hue'],
+        sepia=ranges['sepia']
+    )
+    db.session.add(new_filter)
+    db.session.commit()
+    return new_filter
+
+def convert_image(raw_im):
+    """Resizes and readies the image before it's put into db"""
+    # Strip the html data from the image so we can use it in pillow
+    image_bytes = raw_im.replace('data:image/png;base64,', '')
+    # Open the image into Pillow
+    im = img.open(BytesIO(b64decode(image_bytes)))
+    # Resize
+    resized_im = im.resize((350, round(im.size[1]*350/im.size[0])))
+    # Buffer so we can read out again
+    buffered = BytesIO()
+    # Save resized image
+    resized_im.save(buffered, format="PNG")
+    # Encode again in base64
+    im_encode = b64encode(buffered.getvalue())
+    # This turns into a string ready for db
+    im_data = im_encode.decode()
+    new_image = {
+        'width' : resized_im.size[0],
+        'height' : resized_im.size[1],
+        'url' : "data:image/png;base64," + im_data
+    }
+    return new_image
