@@ -93,6 +93,7 @@ class Image(db.Model):
     __tablename__ = 'images'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     url = db.Column(db.Text)
+    unsplash_id = db.Column(db.Text)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='cascade'))
     width = db.Column(db.Integer)
     height = db.Column(db.Integer)

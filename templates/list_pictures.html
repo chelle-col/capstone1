@@ -15,6 +15,7 @@
         <h3 class="ml-3">{{picture.filter.full_name}}</h3>
         <div class="filter" data-id="{{picture.id}}">
             <img crossorigin="anonymous" class="image" src="{{picture.url}}" 
+                {% if picture.filter %}
                     data-caman="saturation({{picture.filter.saturation}}) 
                     vibrance({{picture.filter.vibrance}}) contrast({{picture.filter.contrast}}) 
                     exposure({{picture.filter.exposure}}) hue({{picture.filter.hue}}) 
@@ -22,8 +23,18 @@
                     {% for preset in picture.filter.preset_filters %}
                     {{preset.full_name}}() 
                     {% endfor %}
-                    " alt="{{picture.filter.full_name}}">
-            <div class="remove"><a class="text-light fas fa-trash-alt" href="#"></a></div>
+                    "
+                {% endif %}
+                    alt="{{picture.filter.full_name}}">
+            <div class="edit-sm"><a class="text-light fas fa-paint-roller" 
+                href="
+                {% if picture.filter %}
+                /image/{{picture.id}}/edit
+                {% else %}
+                /image/{{picture.id}}/new
+                {% endif %}
+                "></a></div>
+            <div class="remove"><a class="text-light fas fa-trash-alt" href=""></a></div>
         </div>
     </div>
     {% endfor %}

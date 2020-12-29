@@ -51,10 +51,21 @@ input[type=range]::-webkit-slider-thumb {
     display: block;
   }
 
+  .filter:hover .edit-sm{
+    display: block;
+  }
+
   .remove{
-    padding-top: 7px;	
 	padding-right: 7px;
-	position: absolute;
+  }
+
+  .edit-sm{
+  padding-right: 35px;
+  }
+
+  .remove, .edit-sm{
+  padding-top: 7px;	
+  position: absolute;
 	right: 0;
 	top: 0;
 	display: none;

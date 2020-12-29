@@ -3,6 +3,9 @@
 {% block script %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/camanjs/4.1.2/caman.full.min.js"></script>
 <script src="{{ url_for('static', filename='edit.js') }}"></script>
+{% if filter_id %}
+<script src="{{ url_for('static', filename='onLoad.js') }}"></script>
+{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -28,12 +31,20 @@
         </div>
 
         <div class="col">
-            <canvas id="canvas" width="{{image['width']}}" height="{{image['height']}}"></canvas>
+            <canvas id="canvas" width="{{image['width']}}" height="{{image['height']}}" data-unsplash="{{image['unsplash']}}"></canvas>
         </div>
 
         <div class="col-2 side-buttons justify-contents-center">
             <button class="btn btn-sm bg-primary m-2 text-light" id="restore">Restore</button>
             <button class="btn btn-sm bg-primary m-2 text-light" id="save-filter">Save Filter</button>
+
+            {% if filter_id %}
+
+            <form action="" data-id="{{filter_id}}" id="edit-filter-form" class="hide">
+                <button class="btn btn-sm btn-secondary">Save</button>
+            </form>
+
+            {% else %}
 
             <form action="" id="filter-name-form" class="hide">
                 <input type="text" name="filter-name" id="filter-name" size="15"  placeholder="filter name"></input>
@@ -45,6 +56,9 @@
                 <input type="text" name="picture-name" id="picture-name" size="15"  placeholder="Picture name"></input>
                 <button class="btn btn-sm btn-secondary">Save</button>
             </form>
+
+            {% endif %}
+
             <select name="user-filters" id="user-filters">
                 <option value="">--Your Filters--</option>
                 {% for filter in user_filters %}

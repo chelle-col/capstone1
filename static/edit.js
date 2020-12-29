@@ -2,7 +2,8 @@
 let filters = [];
 
 // Base URL
-const base_url = 'https://mycapstone1.herokuapp'
+// const base_url = 'https://mycapstone1.herokuapp'
+const base_url = 'http://127.0.0.1:5000'
 
 function drawPicture() {
     // Sets the canvas up
@@ -119,7 +120,6 @@ function resetFilterButtons(){
 function handleSilderChange(doRevert){
     // Gets the values from the silders and sets them in the proper channels on the canvas
     sliderData = getSliderData();
-    console.log(sliderData.noise)
     Caman('#canvas', function(){
         // Restores the orgional image between each update without drawing to page
         if (doRevert){
@@ -204,9 +204,9 @@ function handleSideButtonClick(evt){
     }
 }
 
-async function handleUserFilters(evt){
+async function handleUserFilters(id){
     // Gets the filters from the database that the user has saved and applies them to the image
-    resp = await axios.get(base_url + `/api/filter/${evt.target.value}`)
+    resp = await axios.get(base_url + `/api/filter/${id}`)
     // Use the slider data from the database
     setSliderData(resp.data.ranges);
     handleSilderChange(true);
@@ -248,7 +248,8 @@ async function submitImage(evt){
         'name' : $('#picture-name').val(),
         'image' : $('#image').attr('src'),
         'ranges' : getSliderData(),
-        'presets' : filters
+        'presets' : filters,
+        'unsplash_id' : $('#canvas').data('unsplash')
     }
     resp = await axios.post(base_url + '/api/save_pic_filter', {data: JSON.stringify(data)})
     // Show that the data got saved to the database
@@ -278,6 +279,6 @@ $(function() {
         submitImage(evt);
     })
     $('#user-filters').change((evt)=>{
-        handleUserFilters(evt);
+        handleUserFilters(evt.target.id);
     })
 });

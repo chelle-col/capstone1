@@ -10,6 +10,9 @@ from auth_token import auth_token
 from json import loads
 from flask_cors import cross_origin
 from classes import Slider, Button
+from base64 import b64decode, b64encode
+from PIL import Image as img
+from io import BytesIO
 
 CURR_USER_KEY = "curr_user"
 
@@ -24,7 +27,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 connect_db(app)
 
 ## Seed database through app. Comment out when not in use
-seed_db()
+# seed_db()
 
 UNSPLASH_URL = 'https://api.unsplash.com/photos'
 
@@ -52,10 +55,10 @@ def index():
     else:
         return render_template('display_all.html', image_data=image_data)
 
-@app.route('/image/<image_id>/edit', methods=['GET'])
+@app.route('/image/<image_id>/new', methods=['GET'])
 @cross_origin()
-def edit(image_id):
-    """Show edit page"""
+def new(image_id):
+    """Show new page"""
     if not g.user:
         flash("Access unauthorized.", "danger")
         return redirect("/login")
@@ -67,14 +70,42 @@ def edit(image_id):
     loaded = loads(resp.text)
     image = {
         'url' : loaded['urls']['small'],
-        'width' : 400, # loaded['width'],
-        'height' : loaded['height']*(400/loaded['width'])
+        'width' : 400,
+        'height' : loaded['height']*(400/loaded['width']),
+        'unsplash' : image_id
     }
     return render_template('edit.html', image=image, 
                             sliders=sliders, buttons=buttons, 
                             user_filters=user_filters)
 
-@app.route('/my_image/<int:id>/edit')
+@app.route('/image/<image_id>/edit', methods=['GET'])
+@cross_origin()
+def edit(image_id):
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/login")
+
+    sliders = get_sliders()
+    buttons = get_buttons()
+    user_filters = g.user.user_filters
+    image = Image.query.get_or_404(image_id)
+    filter_id = image.filter.id
+    if image.url[:4] == 'data':
+        return render_template('edit.html',  image=image, 
+                            sliders=sliders, buttons=buttons, 
+                            user_filters=user_filters, filter_id=filter_id)
+    resp = req.get(UNSPLASH_URL + '/' + image.unsplash_id, params={'client_id': auth_token} )
+    loaded = loads(resp.text)
+    image = {
+        'url' : loaded['urls']['small'],
+        'width' : 400, 
+        'height' : loaded['height']*(400/loaded['width'])
+    }
+    return render_template('edit.html',  image=image, 
+                            sliders=sliders, buttons=buttons, 
+                            user_filters=user_filters, filter_id=filter_id)
+
+@app.route('/my_image/<int:id>/edit', methods=['GET'])
 def my_image_edit(id):
     if not g.user:
         flash("Access unauthorized.", "danger")
@@ -83,8 +114,8 @@ def my_image_edit(id):
     sliders = get_sliders()
     buttons = get_buttons()
     user_filters = g.user.user_filters
-    image_byte_string = Image.query.get_or_404(id)
-    return render_template('edit.html', image=image_byte_string, 
+    image = Image.query.get_or_404(id)
+    return render_template('edit.html', image=image, 
                             sliders=sliders, buttons=buttons, 
                             user_filters=user_filters)
 
@@ -136,8 +167,6 @@ def signup():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     """Show the login page"""
-    ## TODO ##
-    ## Maybe change/add api login ##
     form = UserLoginForm()
     if form.validate_on_submit():
         user = User.authentification(
@@ -163,6 +192,7 @@ def logout():
     return redirect('/')
 
 ### API Routes ###
+#'/api/filter/new'
 @app.route('/api/save_filter', methods=['POST'])
 def save_filter():
     data = request.get_json()['data']
@@ -195,14 +225,16 @@ def add_filter_2_db(name, ranges):
     db.session.add(new_filter)
     db.session.commit()
     return new_filter
-
+#'/api/image/filter/new'
 @app.route('/api/save_pic_filter', methods=['POST'])
 def save_pic_filter():
     data = request.get_json()['data']
     load_data = loads(data)
+
     new_filter = add_filter_2_db(name=load_data['name'], ranges=load_data['ranges'])
+
     add_presets_2_filter(new_filter=new_filter, presets=load_data['presets'])
-    new_image = Image(url=load_data['image'], user_id=g.user.id, filter_id=new_filter.id)
+    new_image = Image(url=load_data['image'], user_id=g.user.id, filter_id=new_filter.id, unsplash_id=load_data['unsplash_id'])
     db.session.add_all([new_filter, new_image])
     db.session.commit()
     return new_image.serialize()
@@ -217,7 +249,7 @@ def get_filter(filter_id):
         'ranges' : {slider:getattr(filter, slider) for slider in sliders},
         'presets' : [preset.id for preset in filter.preset_filters]
     }
-
+#'/api/filter/<id>/delete'
 @app.route('/api/remove_filter', methods=['POST'])
 def remove_filter():
     data = request.get_json()['data']
@@ -227,7 +259,7 @@ def remove_filter():
     db.session.delete(filter)
     db.session.commit()
     return 'deleted'
-
+#'api/image/<id>/delete
 @app.route('/api/remove_picture', methods=['POST'])
 def remove_picture():
     data = request.get_json()['data']
@@ -237,16 +269,40 @@ def remove_picture():
     db.session.delete(picture)
     db.session.commit()
     return 'deleted'
-
+# api/image/upload
 @app.route('/api/upload_picture', methods=['POST'])
 def upload_picture():
     data = request.get_json()['data']
     load_data = loads(data)
-    image = Image(user_id=g.user.id, url=load_data['image'], 
-                    width=load_data['width'], height=load_data['height'])
+    converted_image = convert_image(load_data['image'])
+    image = Image(user_id=g.user.id, url=converted_image['url'], 
+                    width=converted_image['width'], height=converted_image['height'])
     db.session.add(image)
     db.session.commit()
     return jsonify(image.id)
+# '/api/filter/<id>/update'
+@app.route('/api/update_filter', methods=['POST'])
+def update_filter():
+    data = request.get_json()['data']
+    load_data = loads(data)
+    Filter.query.filter_by(id=load_data['filter_id']).update(load_data['ranges'])
+    db.session.commit()
+    filter = Filter.query.get(load_data['filter_id'])
+    return filter.serialize()
+
+def convert_image(raw_im):
+    image_bytes = raw_im.replace('data:image/png;base64,', '')
+    im = img.open(BytesIO(b64decode(image_bytes)))
+    buffered = BytesIO()
+    im.save(buffered, format="PNG")
+    im_str = b64encode(buffered.getvalue())
+    im_data = im_str.decode()
+    new_image = {
+        'width' : im.size[0],
+        'height' : im.size[1],
+        'url' : "data:image/png;base64," + im_data
+    }
+    return new_image
 
 ##  Helper Functions  ##
 def do_login(user):
