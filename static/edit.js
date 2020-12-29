@@ -2,7 +2,7 @@
 let filters = [];
 
 // Base URL
-const base_url = 'https://mycapstone1.herokuapp'
+const base_url = 'http://mycapstone1.herokuapp'
 // const base_url = 'http://127.0.0.1:5000'
 
 function drawPicture() {
