@@ -1,6 +1,6 @@
 async function remove_filter(element, id){
     // axios to /api/remove_filter
-    resp = await axios.post('https://mycapstone1.herokuapp/api/remove_filter', {'data': JSON.stringify(id)})
+    resp = await axios.post('https://mycapstone1.herokuapp.com/api/remove_filter', {'data': JSON.stringify(id)})
     // remove from dom
     element.remove();
 }
