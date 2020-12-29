@@ -66,17 +66,25 @@ def new(image_id):
     sliders = get_sliders()
     buttons = get_buttons()
     user_filters = g.user.user_filters
-    resp = req.get(UNSPLASH_URL + '/' + image_id, params={'client_id': auth_token} )
-    loaded = loads(resp.text)
-    image = {
-        'url' : loaded['urls']['small'],
-        'width' : 400,
-        'height' : loaded['height']*(400/loaded['width']),
-        'unsplash' : image_id
-    }
-    return render_template('edit.html', image=image, 
-                            sliders=sliders, buttons=buttons, 
-                            user_filters=user_filters)
+    whole_image = Image.query.get_or_404(image_id)
+    
+    if whole_image.unsplash_id:
+        unsplash_id = whole_image.unsplash_id ## db_image diesnt have unsplash
+        resp = req.get(UNSPLASH_URL + '/' + unsplash_id, params={'client_id': auth_token} )
+        loaded = loads(resp.text)
+        image = {
+            'url' : loaded['urls']['small'],
+            'width' : 400,
+            'height' : loaded['height']*(400/loaded['width']),
+            'unsplash' : image_id
+        }
+        return render_template('edit.html', image=image, 
+                                sliders=sliders, buttons=buttons, 
+                                user_filters=user_filters)
+    else:
+        return render_template('edit.html', image=whole_image, 
+                                sliders=sliders, buttons=buttons, 
+                                user_filters=user_filters)
 
 @app.route('/image/<image_id>/edit', methods=['GET'])
 @cross_origin()
@@ -304,13 +312,14 @@ def update_filter():
 def convert_image(raw_im):
     image_bytes = raw_im.replace('data:image/png;base64,', '')
     im = img.open(BytesIO(b64decode(image_bytes)))
+    resized_im = im.resize((350, round(im.size[1]*350/im.size[0])))
     buffered = BytesIO()
-    im.save(buffered, format="PNG")
-    im_str = b64encode(buffered.getvalue())
-    im_data = im_str.decode()
+    resized_im.save(buffered, format="PNG")
+    im_encode = b64encode(buffered.getvalue())
+    im_data = im_encode.decode()
     new_image = {
-        'width' : im.size[0],
-        'height' : im.size[1],
+        'width' : resized_im.size[0],
+        'height' : resized_im.size[1],
         'url' : "data:image/png;base64," + im_data
     }
     return new_image

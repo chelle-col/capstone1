@@ -1,11 +1,11 @@
 async function remove_filter(element, id){
     // axios to /api/remove_filter
     data = {
-        'id' : $('#navbarDropdown').data('userID'),
+        'id' : $('#navbarDropdown').data('userid'),
         'filter_id' : id
     }
     // resp = await axios.post('https://mycapstone1.herokuapp.com/api/remove_filter', {'data': JSON.stringify(data)})
-    resp = await axios.post('https://127.0.0.1:5000/api/remove_filter', {'data': JSON.stringify(data)})
+    resp = await axios.post('http://127.0.0.1:5000/api/remove_filter', {'data': JSON.stringify(data)})
     // remove from dom
     element.remove();
 }

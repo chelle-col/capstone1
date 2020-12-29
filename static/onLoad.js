@@ -2,11 +2,11 @@ async function updateFilter(evt, id){
     evt.preventDefault()
     sliderData = getSliderData()
     data = {
-        'id' : $('#navbarDropdown').data('userID'),
+        'id' : $('#navbarDropdown').data('userid'),
         'filter_id' : id,
         'ranges' : sliderData
     }
-    resp = await axios.post(base_url + '/api/update_filter', {data: JSON.stringify(data)})
+    resp = await axios.post(base_url + '/api/update_filter', {'data': JSON.stringify(data)})
 }
 
 $(function(){

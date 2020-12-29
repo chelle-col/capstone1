@@ -224,7 +224,7 @@ async function submitFilter(evt){
     // Hide the form on submit
    $('#filter-name-form').toggleClass('hide');
     data = {
-        'id' : $('#navbarDropdown').data('userID'),
+        'id' : $('#navbarDropdown').data('userid'),
         'name' : $('#filter-name').val(),
         'ranges' : getSliderData(),
         'presets' : filters
@@ -246,7 +246,7 @@ async function submitImage(evt){
     $('#picture-name-form').toggleClass('hide');
     evt.preventDefault();
     data =  {
-        'id' : $('#navbarDropdown').data('userID'),
+        'id' : $('#navbarDropdown').data('userid'),
         'name' : $('#picture-name').val(),
         'image' : $('#image').attr('src'),
         'ranges' : getSliderData(),
