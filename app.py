@@ -194,6 +194,7 @@ def logout():
 ### API Routes ###
 #'/api/filter/new'
 @app.route('/api/save_filter', methods=['POST'])
+@cross_origin()
 def save_filter():
     data = request.get_json()['data']
     load_data = loads(data)
@@ -227,6 +228,7 @@ def add_filter_2_db(name, ranges):
     return new_filter
 #'/api/image/filter/new'
 @app.route('/api/save_pic_filter', methods=['POST'])
+@cross_origin()
 def save_pic_filter():
     data = request.get_json()['data']
     load_data = loads(data)
@@ -240,6 +242,7 @@ def save_pic_filter():
     return new_image.serialize()
 
 @app.route('/api/filter/<int:filter_id>', methods=['GET'])
+@cross_origin()
 def get_filter(filter_id):
     filter = Filter.query.get_or_404(filter_id)
     columns = Filter.__table__.columns.keys()
@@ -251,6 +254,7 @@ def get_filter(filter_id):
     }
 #'/api/filter/<id>/delete'
 @app.route('/api/remove_filter', methods=['POST'])
+@cross_origin()
 def remove_filter():
     data = request.get_json()['data']
     load_data = int(loads(data))
@@ -261,6 +265,7 @@ def remove_filter():
     return 'deleted'
 #'api/image/<id>/delete
 @app.route('/api/remove_picture', methods=['POST'])
+@cross_origin()
 def remove_picture():
     data = request.get_json()['data']
     load_data = int(loads(data))
@@ -283,6 +288,7 @@ def upload_picture():
     return jsonify(image.id)
 # '/api/filter/<id>/update'
 @app.route('/api/update_filter', methods=['POST'])
+
 def update_filter():
     data = request.get_json()['data']
     load_data = loads(data)
