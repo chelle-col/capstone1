@@ -2,6 +2,7 @@ async function updateFilter(evt, id){
     evt.preventDefault()
     sliderData = getSliderData()
     data = {
+        'id' : $('#navbarDropdown').data('userID'),
         'filter_id' : id,
         'ranges' : sliderData
     }

@@ -198,7 +198,8 @@ def logout():
 def save_filter():
     data = request.get_json()['data']
     load_data = loads(data)
-    new_filter = add_filter_2_db(name=load_data['name'], ranges=load_data['ranges'])
+    user =  User.query.get(load_data['id'])
+    new_filter = add_filter_2_db(name=load_data['name'], ranges=load_data['ranges'], user=user)
 
     if len(load_data['presets']) > 0:
         add_presets_2_filter(new_filter=new_filter, presets=load_data['presets'])
@@ -212,9 +213,9 @@ def add_presets_2_filter(new_filter, presets):
         new_filter.preset_filters.append(filter)
     db.session.commit()
 
-def add_filter_2_db(name, ranges):
+def add_filter_2_db(name, ranges, user):
     new_filter = Filter(
-        user_id=g.user.id,
+        user_id=user.id,
         full_name=name,
         saturation=ranges['saturation'],
         vibrance=ranges['vibrance'],
@@ -232,11 +233,11 @@ def add_filter_2_db(name, ranges):
 def save_pic_filter():
     data = request.get_json()['data']
     load_data = loads(data)
-
-    new_filter = add_filter_2_db(name=load_data['name'], ranges=load_data['ranges'])
+    user =  User.query.get(load_data['id'])
+    new_filter = add_filter_2_db(name=load_data['name'], ranges=load_data['ranges'], user=user)
 
     add_presets_2_filter(new_filter=new_filter, presets=load_data['presets'])
-    new_image = Image(url=load_data['image'], user_id=g.user.id, filter_id=new_filter.id, unsplash_id=load_data['unsplash_id'])
+    new_image = Image(url=load_data['image'], user_id=user.id, filter_id=new_filter.id, unsplash_id=load_data['unsplash_id'])
     db.session.add_all([new_filter, new_image])
     db.session.commit()
     return new_image.serialize()
@@ -258,8 +259,9 @@ def get_filter(filter_id):
 def remove_filter():
     data = request.get_json()['data']
     load_data = int(loads(data))
+    user =  User.query.get(load_data['id'])
     filter = Filter.query.get(load_data)
-    g.user.user_filters.remove(filter)
+    user.user_filters.remove(filter)
     db.session.delete(filter)
     db.session.commit()
     return 'deleted'
@@ -269,8 +271,9 @@ def remove_filter():
 def remove_picture():
     data = request.get_json()['data']
     load_data = int(loads(data))
+    user =  User.query.get(load_data['id'])
     picture = Image.query.get(load_data)
-    g.user.pics.remove(picture)
+    user.pics.remove(picture)
     db.session.delete(picture)
     db.session.commit()
     return 'deleted'
@@ -280,15 +283,16 @@ def remove_picture():
 def upload_picture():
     data = request.get_json()['data']
     load_data = loads(data)
+    user =  User.query.get(load_data['id'])
     converted_image = convert_image(load_data['image'])
-    image = Image(user_id=g.user.id, url=converted_image['url'], 
+    image = Image(user_id=user.id, url=converted_image['url'], 
                     width=converted_image['width'], height=converted_image['height'])
     db.session.add(image)
     db.session.commit()
     return jsonify(image.id)
 # '/api/filter/<id>/update'
 @app.route('/api/update_filter', methods=['POST'])
-
+@cross_origin()
 def update_filter():
     data = request.get_json()['data']
     load_data = loads(data)

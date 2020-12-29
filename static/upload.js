@@ -31,6 +31,7 @@ $(function() {
 
     $('#upload').on('click', async ()=>{
         data = {
+            'id' : $('#navbarDropdown').data('userID'),
             'image': canvas.toDataURL(),
             'width': canvas.width,
             'height': canvas.height

@@ -39,7 +39,7 @@
         </ul>
         {% else %}
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <a class="nav-link dropdown-toggle" data-userID="{{g.user.id}}" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
            {{g.user.username}}
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
