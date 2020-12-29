@@ -36,7 +36,9 @@ $(function() {
             'width': canvas.width,
             'height': canvas.height
         }
-        resp = await axios.post('https://mycapstone1.herokuapp.com/api/upload_picture', {data: JSON.stringify(data)})
-        window.location.href = `https://mycapstone1.herokuapp.com/my_image/${resp.data}/edit`
+        // resp = await axios.post('https://mycapstone1.herokuapp.com/api/upload_picture', {data: JSON.stringify(data)})
+        // window.location.href = `https://mycapstone1.herokuapp.com/my_image/${resp.data}/edit`
+        resp = await axios.post('https://127.0.0.1:5000/api/upload_picture', {data: JSON.stringify(data)})
+        window.location.href = `https://127.0.0.1:5000/my_image/${resp.data}/edit`
     })
 });
