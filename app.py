@@ -69,7 +69,7 @@ def new(image_id):
     user_filters = g.user.user_filters
     whole_image = Image.query.get_or_404(image_id)
     # If it has a unsplash id then it comes from there - use it
-    if whole_image.unsplash_id:
+    if not whole_image.unsplash_id:
         unsplash_id = whole_image.unsplash_id 
         resp = req.get(UNSPLASH_URL + '/' + unsplash_id, params={'client_id': auth_token} )
         loaded = loads(resp.text)
