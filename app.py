@@ -67,28 +67,22 @@ def new(image_id):
     sliders = get_sliders()
     buttons = get_buttons()
     user_filters = g.user.user_filters
-    if type(image_id) == int:
+    if type(image_id) == int:  # int means db id
         whole_image = Image.query.get(image_id)
-        if whole_image.unsplash_id:
+        if whole_image.unsplash_id:  # unsplash id, get unsplash image
             unsplash_id = whole_image.unsplash_id 
-            resp = req.get(UNSPLASH_URL + '/' + unsplash_id, params={'client_id': auth_token} )
-            loaded = loads(resp.text)
-            image = {
-                'url' : loaded['urls']['small'],
-                'width' : 400,
-                'height' : loaded['height']*(400/loaded['width']),
-                'unsplash' : image_id
-            }
+            image = get_unsplash_image(unsplash_id)
             return render_template('edit.html', image=image, 
                                     sliders=sliders, buttons=buttons, 
                                     user_filters=user_filters)
-        else:
+        else:  # db image
             return render_template('edit.html', image=whole_image, 
                                     sliders=sliders, buttons=buttons, 
                                     user_filters=user_filters)
-    # Else is for images in our db/new images
+    # Else is for new unsplash images
     else:
-        return render_template('edit.html', image=whole_image, 
+        image = get_unsplash_image(image_id)
+        return render_template('edit.html', image=image, 
                                 sliders=sliders, buttons=buttons, 
                                 user_filters=user_filters)
 
@@ -403,3 +397,13 @@ def convert_image(raw_im):
         'url' : "data:image/png;base64," + im_data
     }
     return new_image
+
+def get_unsplash_image(image_id):
+    resp = req.get(UNSPLASH_URL + '/' + image_id, params={'client_id': auth_token} )
+    loaded = loads(resp.text)
+    return {
+        'url' : loaded['urls']['small'],
+        'width' : 400,
+        'height' : loaded['height']*(400/loaded['width']),
+        'unsplash' : image_id
+    }
