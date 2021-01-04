@@ -67,21 +67,23 @@ def new(image_id):
     sliders = get_sliders()
     buttons = get_buttons()
     user_filters = g.user.user_filters
-    whole_image = Image.query.get(image_id)
+    if type(image_id) == int:
+        whole_image = Image.query.get(image_id)
     # If it has a unsplash id then it comes from there - use it
-    if not whole_image.unsplash_id:
-        unsplash_id = whole_image.unsplash_id 
-        resp = req.get(UNSPLASH_URL + '/' + unsplash_id, params={'client_id': auth_token} )
-        loaded = loads(resp.text)
-        image = {
-            'url' : loaded['urls']['small'],
-            'width' : 400,
-            'height' : loaded['height']*(400/loaded['width']),
-            'unsplash' : image_id
-        }
-        return render_template('edit.html', image=image, 
-                                sliders=sliders, buttons=buttons, 
-                                user_filters=user_filters)
+    if whole_image:
+        if whole_image.unsplash_id:
+            unsplash_id = whole_image.unsplash_id 
+            resp = req.get(UNSPLASH_URL + '/' + unsplash_id, params={'client_id': auth_token} )
+            loaded = loads(resp.text)
+            image = {
+                'url' : loaded['urls']['small'],
+                'width' : 400,
+                'height' : loaded['height']*(400/loaded['width']),
+                'unsplash' : image_id
+            }
+            return render_template('edit.html', image=image, 
+                                    sliders=sliders, buttons=buttons, 
+                                    user_filters=user_filters)
     # Else is for images in our db/new images
     else:
         return render_template('edit.html', image=whole_image, 
