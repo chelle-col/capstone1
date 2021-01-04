@@ -69,8 +69,6 @@ def new(image_id):
     user_filters = g.user.user_filters
     if type(image_id) == int:
         whole_image = Image.query.get(image_id)
-    # If it has a unsplash id then it comes from there - use it
-    if whole_image:
         if whole_image.unsplash_id:
             unsplash_id = whole_image.unsplash_id 
             resp = req.get(UNSPLASH_URL + '/' + unsplash_id, params={'client_id': auth_token} )
@@ -82,6 +80,10 @@ def new(image_id):
                 'unsplash' : image_id
             }
             return render_template('edit.html', image=image, 
+                                    sliders=sliders, buttons=buttons, 
+                                    user_filters=user_filters)
+        else:
+            return render_template('edit.html', image=whole_image, 
                                     sliders=sliders, buttons=buttons, 
                                     user_filters=user_filters)
     # Else is for images in our db/new images
