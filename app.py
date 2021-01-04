@@ -67,7 +67,7 @@ def new(image_id):
     sliders = get_sliders()
     buttons = get_buttons()
     user_filters = g.user.user_filters
-    whole_image = Image.query.get_or_404(image_id)
+    whole_image = Image.query.get(image_id)
     # If it has a unsplash id then it comes from there - use it
     if not whole_image.unsplash_id:
         unsplash_id = whole_image.unsplash_id 
@@ -82,7 +82,7 @@ def new(image_id):
         return render_template('edit.html', image=image, 
                                 sliders=sliders, buttons=buttons, 
                                 user_filters=user_filters)
-    # Else is for images in our db
+    # Else is for images in our db/new images
     else:
         return render_template('edit.html', image=whole_image, 
                                 sliders=sliders, buttons=buttons, 
