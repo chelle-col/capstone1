@@ -229,7 +229,7 @@ async function submitFilter(evt){
         'ranges' : getSliderData(),
         'presets' : filters
     }
-    resp = await axios.post(base_url + '/api/save_filter', {data: JSON.stringify(data)});
+    resp = await axios.post(base_url + '/api/filter/new', {data: JSON.stringify(data)});
     // Feedback to show the user their filter was saved
     showSavedData(data['name']);
 }
@@ -253,7 +253,7 @@ async function submitImage(evt){
         'presets' : filters,
         'unsplash_id' : $('#canvas').data('unsplash')
     }
-    resp = await axios.post(base_url + '/api/save_pic_filter', {data: JSON.stringify(data)})
+    resp = await axios.post(base_url + '/api/image/filter/new', {data: JSON.stringify(data)})
     // Show that the data got saved to the database
     showSavedData(data['name'])
 }

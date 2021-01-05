@@ -1,12 +1,12 @@
 async function remove_filter(element, id){
-    // axios to /api/remove_filter
+    // axios to /api/image/<id>/delete
     data = {
-        'id' : $('#navbarDropdown').data('userid'),
-        "filter_id" : id
+        'user_id' : $('#navbarDropdown').data('userid'),
+        "image_id" : id
     }
     console.log(data)
-    resp = await axios.post('https://mycapstone1.herokuapp.com/api/remove_picture', {'data': JSON.stringify(data)})
-    // resp = await axios.post('http://127.0.0.1:5000//api/remove_picture', {'data': JSON.stringify(data)})
+    resp = await axios.post(`https://mycapstone1.herokuapp.com/api/image/${id}/delete`, {'data': JSON.stringify(data)})
+    // resp = await axios.post(`http://127.0.0.1:5000/api/image/${id}/delete`, {'data': JSON.stringify(data)})
     // remove from dom
     element.remove();
 }

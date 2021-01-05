@@ -194,10 +194,8 @@ def logout():
     return redirect('/')
 
 ### API Routes ###
-# I know the names are wrong. Will Fix soon
 # TODO add routes to give different sized images
-#'/api/filter/new'
-@app.route('/api/save_filter', methods=['POST'])
+@app.route('/api/filter/new', methods=['POST'])
 @cross_origin()
 def save_filter():
     """Adds filter to db and returns the new filter"""
@@ -212,8 +210,7 @@ def save_filter():
     #  TODO add error for blank name
     return new_filter.serialize()
 
-#'/api/image/filter/new'
-@app.route('/api/save_pic_filter', methods=['POST'])
+@app.route('/api/image/filter/new', methods=['POST'])
 @cross_origin()
 def save_pic_filter():
     """Adds filter and image to db and returns the new filter"""
@@ -240,34 +237,34 @@ def get_filter(filter_id):
         'ranges' : {slider:getattr(filter, slider) for slider in sliders},
         'presets' : [preset.id for preset in filter.preset_filters]
     }
-#'/api/filter/<id>/delete'
-@app.route('/api/remove_filter', methods=['POST'])
+
+@app.route('/api/filter/<id>/delete', methods=['POST'])
 @cross_origin()
-def remove_filter():
+def remove_filter(id):
     """Removes the filter from db"""
     data = request.get_json()['data']
     load_data = loads(data)
-    user =  User.query.get(load_data['id'])
-    filter = Filter.query.get(load_data['filter_id'])
+    user =  User.query.get(load_data['user_id'])
+    filter = Filter.query.get(id)
     user.user_filters.remove(filter)
     db.session.delete(filter)
     db.session.commit()
     return 'deleted'
-#'api/image/<id>/delete
-@app.route('/api/remove_picture', methods=['POST'])
+
+@app.route('/api/image/<id>/delete', methods=['POST'])
 @cross_origin()
 def remove_picture():
     """Removes the picture and all filter data from db"""
     data = request.get_json()['data']
     load_data = loads(data)
-    user =  User.query.get(load_data['id'])
-    picture = Image.query.get(load_data['filter_id'])
+    user =  User.query.get(load_data['user_id'])
+    picture = Image.query.get(id)
     user.pics.remove(picture)
     db.session.delete(picture)
     db.session.commit()
     return 'deleted'
-# api/image/upload
-@app.route('/api/upload_picture', methods=['POST'])
+
+@app.route('/api/image/upload', methods=['POST'])
 @cross_origin()
 def upload_picture():
     """Adds the base64 representation of the image to the db"""
@@ -280,7 +277,7 @@ def upload_picture():
     db.session.add(image)
     db.session.commit()
     return jsonify(image.id)
-# '/api/filter/<id>/update'
+
 @app.route('/api/update_filter', methods=['POST'])
 @cross_origin()
 def update_filter():
