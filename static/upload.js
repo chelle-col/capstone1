@@ -37,6 +37,6 @@ $(function() {
             'height': canvas.height
         }
         resp = await axios.post( base_url + '/api/image/upload', {data: JSON.stringify(data)})
-        window.location.href = base_url + `/my_image/${resp.data}/edit`
+        window.location.href = base_url + `/image/${resp.data}/new`
     })
 });

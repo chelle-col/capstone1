@@ -258,9 +258,10 @@ async function submitImage(evt){
 
 $(function() {
     // Main function
-    $('img').on( 'load', ()=> {
+    // jquery on('load', function ) not working. This works
+    if (document.getElementById('image').complete){
         drawPicture();
-    });
+    }
     $('#sliders').change( ()=>{
         handleSilderChange(true);
     }).on('click', 'button', (evt)=>{

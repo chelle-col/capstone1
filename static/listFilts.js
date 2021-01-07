@@ -1,10 +1,9 @@
 async function remove_filter(element, id){
     // axios to /api/remove_filter
     data = {
-        'id' : $('#navbarDropdown').data('userid'),
-        'filter_id' : id
+        'user_id' : $('#navbarDropdown').data('userid')
     }
-    resp = await axios.post(base_url + `/api/${id}/delete`, {'data': JSON.stringify(data)})
+    resp = await axios.post(base_url + `/api/filter/${id}/delete`, {'data': JSON.stringify(data)})
     // remove from dom
     element.remove();
 }

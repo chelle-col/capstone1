@@ -67,9 +67,9 @@ def new(image_id):
     sliders = get_sliders()
     buttons = get_buttons()
     user_filters = g.user.user_filters
-    if type(image_id) == int:  # int means db id
+    if image_id.isdigit():  # int means db id
         whole_image = Image.query.get(image_id)
-        if whole_image.unsplash_id:  # unsplash id, get unsplash image
+        if whole_image.unsplash_id != 'NONE':  # unsplash id, get unsplash image
             unsplash_id = whole_image.unsplash_id 
             image = get_unsplash_image(unsplash_id)
             return render_template('edit.html', image=image, 
@@ -253,7 +253,7 @@ def remove_filter(id):
 
 @app.route('/api/image/<id>/delete', methods=['POST'])
 @cross_origin()
-def remove_picture():
+def remove_picture(id):
     """Removes the picture and all filter data from db"""
     data = request.get_json()['data']
     load_data = loads(data)
@@ -273,7 +273,8 @@ def upload_picture():
     user =  User.query.get(load_data['id'])
     converted_image = convert_image(load_data['image'])
     image = Image(user_id=user.id, url=converted_image['url'], 
-                    width=converted_image['width'], height=converted_image['height'])
+                    width=converted_image['width'], height=converted_image['height'],
+                    unsplash_id='NONE')
     db.session.add(image)
     db.session.commit()
     return jsonify(image.id)
