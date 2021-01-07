@@ -1,10 +1,6 @@
 // Hold the filters applied to the canvas
 let filters = [];
 
-// Base URL
-const base_url = 'http://mycapstone1.herokuapp.com'
-// const base_url = 'http://127.0.0.1:5000'
-
 function drawPicture() {
     // Sets the canvas up
     const canvas = document.getElementById("canvas");

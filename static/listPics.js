@@ -5,8 +5,8 @@ async function remove_filter(element, id){
         "image_id" : id
     }
     console.log(data)
-    resp = await axios.post(`https://mycapstone1.herokuapp.com/api/image/${id}/delete`, {'data': JSON.stringify(data)})
-    // resp = await axios.post(`http://127.0.0.1:5000/api/image/${id}/delete`, {'data': JSON.stringify(data)})
+    resp = await axios.post( base_url + `/api/image/${id}/delete`, {'data': JSON.stringify(data)})
+    
     // remove from dom
     element.remove();
 }

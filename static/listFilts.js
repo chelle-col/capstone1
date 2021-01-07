@@ -4,8 +4,7 @@ async function remove_filter(element, id){
         'id' : $('#navbarDropdown').data('userid'),
         'filter_id' : id
     }
-    // resp = await axios.post(`https://mycapstone1.herokuapp.com/api/${id}/delete`, {'data': JSON.stringify(data)})
-    resp = await axios.post(`http://127.0.0.1:5000/api/${id}/delete`, {'data': JSON.stringify(data)})
+    resp = await axios.post(base_url + `/api/${id}/delete`, {'data': JSON.stringify(data)})
     // remove from dom
     element.remove();
 }
