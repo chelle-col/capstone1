@@ -280,6 +280,6 @@ $(function() {
         submitImage(evt);
     })
     $('#user-filters').change((evt)=>{
-        handleUserFilters(evt.target.id);
+        handleUserFilters(evt.target.value);
     })
 });
