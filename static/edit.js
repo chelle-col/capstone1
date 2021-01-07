@@ -258,7 +258,9 @@ async function submitImage(evt){
 
 $(function() {
     // Main function
-    drawPicture();
+    $('img').on( 'load', ()=> {
+        drawPicture();
+    });
     $('#sliders').change( ()=>{
         handleSilderChange(true);
     }).on('click', 'button', (evt)=>{
